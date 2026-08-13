@@ -1,14 +1,14 @@
-# VoiceRAG ◈
+# VoiceRAG
 
 > **Production-Oriented, Voice-Enabled Retrieval-Augmented Generation System**
 > *From Streaming Voice → Dual-Stream Hybrid Retrieval → Adaptive Reranking → Guardrail Verification → Grounded Answer with Citations.*
 
 ---
 
-## 🏛️ System Architecture
+## System Architecture
 
 <details open>
-<summary><b>🔍 Click to expand/collapse System Architecture Diagram</b></summary>
+<summary><b>Click to expand/collapse System Architecture Diagram</b></summary>
 
 <br/>
 
@@ -25,22 +25,22 @@ flowchart TD
     classDef gen fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff
     classDef out fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff
 
-    subgraph InputStage["🎙️ 1. Speech & Input"]
+    subgraph InputStage["1. Speech & Input"]
         Audio["PCM Audio Stream"]:::voice --> STT["Speech-To-Text (Whisper v3)"]:::voice
     end
 
-    subgraph QueryStage["🔍 2. Analysis & Intent"]
+    subgraph QueryStage["2. Analysis & Intent"]
         STT --> QA["Query Classifier & Intent Analyzer"]:::query
     end
 
-    subgraph RetrievalStage["⚡ 3. Dual-Stream Hybrid Retrieval"]
+    subgraph RetrievalStage["3. Dual-Stream Hybrid Retrieval"]
         QA --> BM25["BM25 Lexical Index<br/>(Sparse Search)"]:::bm25
         QA --> Dense["Qdrant Vector Store<br/>(1536d Embeddings)"]:::dense
         BM25 --> RRF["Reciprocal Rank Fusion<br/>RRF(k=60)"]:::rrf
         Dense --> RRF
     end
 
-    subgraph DecisionStage["🛡️ 4. Adaptive Rerank & Guardrails"]
+    subgraph DecisionStage["4. Adaptive Rerank & Guardrails"]
         RRF --> Rerank{"Adaptive Cross-Encoder<br/>(MiniLM-L6)"}:::rerank
         Rerank -->|Low Score Margin| RerankExec["Execute Cross-Encoder"]:::rerank
         Rerank -->|High Agreement| SkipRerank["Skip Reranking (~31ms Saved)"]:::rerank
@@ -48,8 +48,8 @@ flowchart TD
         SkipRerank --> Guard
     end
 
-    subgraph GenerationStage["✨ 5. Grounded Generation"]
-        Guard -->|PASS Coverage ≥ 0.72| Gen["LLM Generator (GPT-4o mini)"]:::gen
+    subgraph GenerationStage["5. Grounded Generation"]
+        Guard -->|PASS Coverage >= 0.72| Gen["LLM Generator (GPT-4o mini)"]:::gen
         Guard -->|ABSTAIN Low Evidence| Abstain["Safe Abstention Notice"]:::guard
         Gen --> Output["Grounded Answer + Page Citations"]:::out
     end
@@ -59,18 +59,18 @@ flowchart TD
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- **🎙️ Real-Time Voice STT**: Speech-to-Text with automatic local fallback (`Whisper.cpp`).
-- **📚 Multi-Format Chunking**: Fixed, Structural (Markdown H1-H6), Parent-Child, and Adaptive Semantic chunking.
-- **⚡ Dual-Stream Hybrid Retrieval**: Concurrent BM25 (Lexical) + Dense HNSW (Qdrant) fused via **Reciprocal Rank Fusion ($k=60$)**.
-- **🧠 Adaptive Cross-Encoder Reranking**: Dynamic reranking evaluation that skips redundant processing when initial dense/sparse agreement is high, saving ~31ms per query.
-- **🛡️ Provable Grounding & Abstention Guardrails**: Verifies candidate evidence coverage and contradiction scores to abstain when evidence is insufficient.
-- **📊 Research & Benchmark Console**: Full Next.js 14 developer console with real-time execution DAGs, stage latency waterfalls, and P50/P75/P95/P99 metrics.
+- **Real-Time Voice STT**: Speech-to-Text with automatic local fallback (`Whisper.cpp`).
+- **Multi-Format Chunking**: Fixed, Structural (Markdown H1-H6), Parent-Child, and Adaptive Semantic chunking.
+- **Dual-Stream Hybrid Retrieval**: Concurrent BM25 (Lexical) + Dense HNSW (Qdrant) fused via **Reciprocal Rank Fusion ($k=60$)**.
+- **Adaptive Cross-Encoder Reranking**: Dynamic reranking evaluation that skips redundant processing when initial dense/sparse agreement is high, saving ~31ms per query.
+- **Provable Grounding & Abstention Guardrails**: Verifies candidate evidence coverage and contradiction scores to abstain when evidence is insufficient.
+- **Research & Benchmark Console**: Full Next.js 14 developer console with real-time execution DAGs, stage latency waterfalls, and P50/P75/P95/P99 metrics.
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technologies |
 | :--- | :--- |
@@ -82,7 +82,7 @@ flowchart TD
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Option 1: Docker Compose (Recommended)
 
@@ -127,7 +127,7 @@ npm run dev
 
 ---
 
-## 📑 Developer Console & Pages
+## Developer Console & Pages
 
 The frontend application exposes 10 dedicated research and management pages:
 
@@ -143,7 +143,7 @@ The frontend application exposes 10 dedicated research and management pages:
 
 ---
 
-## 🧪 Testing & Verification
+## Testing & Verification
 
 ```bash
 # Run unit test suite
@@ -159,6 +159,6 @@ mypy app/
 
 ---
 
-## 📜 License
+## License
 
 Distributed under the [MIT License](LICENSE).
