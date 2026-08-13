@@ -1,4 +1,4 @@
-<h1 style="text-align: center;">VOICE RAG</h1>
+<center><h1>VOICE RAG</h1></center>
 
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/sanjanb/voice-rag)
