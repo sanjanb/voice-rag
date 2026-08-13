@@ -1,0 +1,5 @@
+{"id": "q001", "question": "How do I reset my API key?", "answerable": true, "relevant_chunks": ["chunk_12", "chunk_18"], "reference_answer": "Go to Settings > API Keys and click Reset."}
+{"id": "q002", "question": "What does error code E4017 mean?", "answerable": true, "relevant_chunks": ["chunk_5"], "reference_answer": "E4017 indicates a connection timeout."}
+{"id": "q003", "question": "Compare PostgreSQL and MySQL for analytics workloads.", "answerable": true, "relevant_chunks": ["chunk_20", "chunk_21"], "reference_answer": "PostgreSQL excels at complex queries and JSON support; MySQL is simpler for read-heavy workloads."}
+{"id": "q004", "question": "How does authentication work?", "answerable": false, "relevant_chunks": [], "reference_answer": ""}
+{"id": "q005", "question": "What is the capital of France?", "answerable": false, "relevant_chunks": [], "reference_answer": ""}
