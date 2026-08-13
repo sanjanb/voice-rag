@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# ruff
+.ruff_cache/
+
+# Docker
+docker/.env
+
+# Data (user-specific)
+data/raw/*
+data/parsed/*
+data/chunks/*
+!data/raw/.gitkeep
+!data/parsed/.gitkeep
+!data/chunks/.gitkeep
+
+# OpenCode deepwork state
+.slim/
