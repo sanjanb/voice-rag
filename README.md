@@ -1,5 +1,11 @@
-<center><h1>VOICE RAG</h1></center>
+<div align="center">
 
+# VoiceRAG
+
+**Production-Oriented, Voice-Enabled Retrieval-Augmented Generation System**  
+*From Streaming Voice → Dual-Stream Hybrid Retrieval → Adaptive Reranking → Guardrail Verification → Grounded Answer with Citations.*
+
+<br/>
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/sanjanb/voice-rag)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://python.org)
@@ -7,6 +13,8 @@
 [![Vector DB](https://img.shields.io/badge/vector_db-Qdrant-red.svg)](https://qdrant.tech)
 [![Code Style](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+</div>
 
 VoiceRAG is an enterprise-grade, low-latency Voice Retrieval-Augmented Generation (RAG) system. It combines real-time streaming Speech-to-Text (STT), dual-stream hybrid retrieval (Dense Vector Search + BM25 Lexical Index), Reciprocal Rank Fusion (RRF), adaptive cross-encoder reranking, and formal answerability guardrails to deliver provably grounded responses with zero hallucination.
 
