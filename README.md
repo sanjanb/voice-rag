@@ -1,4 +1,5 @@
-# VoiceRAG
+<h1 style="text-align: center;">VOICE RAG</h1>
+
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/sanjanb/voice-rag)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://python.org)
