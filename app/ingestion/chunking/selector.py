@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from app.ingestion.chunking.base import Chunk, Chunker
 from app.ingestion.chunking.fixed import fixed_chunk
-from app.ingestion.chunking.structural import structural_chunk
-from app.ingestion.chunking.semantic import semantic_chunk
 from app.ingestion.chunking.parent_child import parent_child_chunk
+from app.ingestion.chunking.semantic import semantic_chunk
+from app.ingestion.chunking.structural import structural_chunk
+
+if TYPE_CHECKING:
+    from app.ingestion.chunking.base import Chunk
 
 
 def _compute_heading_density(text: str) -> float:
@@ -52,7 +54,7 @@ def adaptive_chunk(
     text: str,
     document_id: str,
     document_type: str = "unknown",
-    metadata: dict | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> list[Chunk]:
     """Chunk a document using the adaptive strategy selector."""
     strategy = select_strategy(text, document_type)

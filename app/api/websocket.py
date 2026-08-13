@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from fastapi import WebSocket
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fastapi import WebSocket
 
 
 async def voice_websocket(websocket: WebSocket) -> None:

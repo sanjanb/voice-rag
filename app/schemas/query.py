@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class DifficultyClass(str, Enum):
+class DifficultyClass(StrEnum):
     """Query difficulty classification."""
 
     EASY = "easy"

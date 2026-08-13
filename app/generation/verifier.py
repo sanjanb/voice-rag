@@ -16,20 +16,20 @@ class Verifier:
     def __init__(self, client: Any = None) -> None:
         self.client = client
 
-    async def verify(
-        self, answer: GeneratedAnswer, evidence: str
-    ) -> list[ClaimVerification]:
+    async def verify(self, answer: GeneratedAnswer, evidence: str) -> list[ClaimVerification]:
         """Verify each claim in the answer against the evidence."""
         verifications: list[ClaimVerification] = []
 
         for claim in answer.claims:
             # TODO: implement actual LLM-based verification
-            verifications.append(ClaimVerification(
-                claim_id=claim.claim_id,
-                claim=claim.text,
-                supported=True,  # placeholder
-                evidence_ids=claim.citation_ids,
-                reason="placeholder verification",
-            ))
+            verifications.append(
+                ClaimVerification(
+                    claim_id=claim.claim_id,
+                    claim=claim.text,
+                    supported=True,  # placeholder
+                    evidence_ids=claim.citation_ids,
+                    reason="placeholder verification",
+                )
+            )
 
         return verifications

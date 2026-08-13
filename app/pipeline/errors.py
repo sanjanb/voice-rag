@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
+from typing import Any
 
 
-class ErrorCode(str, Enum):
+class ErrorCode(StrEnum):
     """Machine-readable error codes."""
 
     STT_TIMEOUT = "STT_TIMEOUT"
@@ -41,7 +42,7 @@ class PipelineError(Exception):
         self.cause = cause
         super().__init__(f"[{code.value}] {stage}: {message}")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "code": self.code.value,
             "stage": self.stage,

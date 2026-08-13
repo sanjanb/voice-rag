@@ -5,9 +5,9 @@ from __future__ import annotations
 import logging
 
 from app.retrieval.dense import DenseRetriever
-from app.retrieval.sparse import SparseRetriever
 from app.retrieval.rrf import reciprocal_rank_fusion
-from app.schemas.retrieval import RetrievalResult, RetrievedChunk
+from app.retrieval.sparse import SparseRetriever
+from app.schemas.retrieval import RetrievalResult
 
 logger = logging.getLogger(__name__)
 

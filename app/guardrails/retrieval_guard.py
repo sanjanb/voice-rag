@@ -31,14 +31,20 @@ class RetrievalGuard:
             )
 
         # Check score confidence
-        if candidates and candidates[0].rrf_score is not None:
-            if self.min_confidence is not None and candidates[0].rrf_score < self.min_confidence:
-                return RetrievalDecision(
-                    decision="abstain",
-                    confidence=candidates[0].rrf_score,
-                    reason=f"Top score {candidates[0].rrf_score:.4f} below threshold {self.min_confidence}",
-                    evidence_ids=[c.chunk_id for c in candidates],
-                )
+        if (
+            candidates
+            and candidates[0].rrf_score is not None
+            and self.min_confidence is not None
+            and candidates[0].rrf_score < self.min_confidence
+        ):
+            return RetrievalDecision(
+                decision="abstain",
+                confidence=candidates[0].rrf_score,
+                reason=(
+                    f"Top score {candidates[0].rrf_score:.4f} below threshold {self.min_confidence}"
+                ),
+                evidence_ids=[c.chunk_id for c in candidates],
+            )
 
         return RetrievalDecision(
             decision="allow",

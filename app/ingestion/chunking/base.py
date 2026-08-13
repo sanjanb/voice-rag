@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Any, Protocol
 
 from pydantic import BaseModel, Field
 
@@ -22,10 +22,12 @@ class Chunk(BaseModel):
     chunk_version: str = "1.0"
     token_count: int = 0
     char_count: int = 0
-    metadata: dict = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class Chunker(Protocol):
     """Protocol for chunking strategies."""
 
-    def chunk(self, text: str, document_id: str, metadata: dict | None = None) -> list[Chunk]: ...
+    def chunk(
+        self, text: str, document_id: str, metadata: dict[str, Any] | None = None
+    ) -> list[Chunk]: ...

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from app.schemas.retrieval import RetrievedChunk
+if TYPE_CHECKING:
+    from app.schemas.retrieval import RetrievedChunk
 
 logger = logging.getLogger(__name__)
 

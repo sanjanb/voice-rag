@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from app.schemas.retrieval import RetrievedChunk
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.retrieval import RetrievedChunk
 
 
 class ContextBuilder:
@@ -20,9 +23,7 @@ class ContextBuilder:
             chunk_tokens = chunk.metadata.get("token_count", len(chunk.content.split()))
             if token_count + chunk_tokens > self.max_tokens:
                 break
-            context_parts.append(
-                f"[{chunk.chunk_id}] {chunk.content}"
-            )
+            context_parts.append(f"[{chunk.chunk_id}] {chunk.content}")
             token_count += chunk_tokens
 
         return "\n\n".join(context_parts)

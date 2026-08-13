@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from app.schemas.retrieval import RetrievedChunk
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.retrieval import RetrievedChunk
 
 
 def reciprocal_rank_fusion(
@@ -32,7 +35,7 @@ def reciprocal_rank_fusion(
     sorted_ids = sorted(scores.keys(), key=lambda cid: scores[cid], reverse=True)[:top_n]
 
     results: list[RetrievedChunk] = []
-    for rank, chunk_id in enumerate(sorted_ids, start=1):
+    for chunk_id in sorted_ids:
         chunk = chunk_map[chunk_id].model_copy()
         chunk.rrf_score = scores[chunk_id]
         results.append(chunk)

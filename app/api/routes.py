@@ -2,16 +2,17 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, UploadFile, File
+from typing import Annotated
 
-from app.schemas.audio import AudioRequest
+from fastapi import APIRouter, File, UploadFile
+
 from app.schemas.response import FinalResponse
 
 router = APIRouter()
 
 
 @router.post("/transcribe", response_model=FinalResponse)
-async def transcribe_audio(audio: UploadFile = File(...)) -> FinalResponse:
+async def transcribe_audio(audio: Annotated[UploadFile, File()]) -> FinalResponse:
     """Transcribe audio and return pipeline result."""
     # TODO: implement full pipeline
     return FinalResponse(
@@ -22,6 +23,6 @@ async def transcribe_audio(audio: UploadFile = File(...)) -> FinalResponse:
 
 
 @router.get("/health")
-async def health_check() -> dict:
+async def health_check() -> dict[str, str]:
     """Health check endpoint."""
     return {"status": "ok"}

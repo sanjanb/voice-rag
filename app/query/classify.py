@@ -21,7 +21,9 @@ def classify_difficulty(query: str) -> QueryAnalysis:
             multi_hop = True
 
     # Comparison indicators
-    comparison_words = re.compile(r"\b(compare|versus|vs\.?|difference|better|worse)\b", re.IGNORECASE)
+    comparison_words = re.compile(
+        r"\b(compare|versus|vs\.?|difference|better|worse)\b", re.IGNORECASE
+    )
     if comparison_words.search(query):
         score += 0.15
 
@@ -31,7 +33,10 @@ def classify_difficulty(query: str) -> QueryAnalysis:
         score += 0.1
 
     # Multi-hop indicators
-    multi_hop_words = re.compile(r"\b(and how|along with|in addition|as well as|combined with)\b", re.IGNORECASE)
+    multi_hop_words = re.compile(
+        r"\b(and how|along with|in addition|as well as|combined with)\b",
+        re.IGNORECASE,
+    )
     if multi_hop_words.search(query):
         score += 0.15
         multi_hop = True

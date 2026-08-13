@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from typing import Any
 
 from app.ingestion.chunking.base import Chunk
 
@@ -12,7 +13,7 @@ def fixed_chunk(
     document_id: str,
     chunk_size: int = 600,
     overlap: int = 90,
-    metadata: dict | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> list[Chunk]:
     """Split text into fixed-size chunks with overlap."""
     words = text.split()
@@ -27,15 +28,17 @@ def fixed_chunk(
 
         chunk_id = hashlib.sha256(f"{document_id}:{idx}:{content[:100]}".encode()).hexdigest()[:16]
 
-        chunks.append(Chunk(
-            chunk_id=chunk_id,
-            document_id=document_id,
-            content=content,
-            chunk_strategy="fixed",
-            token_count=len(chunk_words),
-            char_count=len(content),
-            metadata=metadata or {},
-        ))
+        chunks.append(
+            Chunk(
+                chunk_id=chunk_id,
+                document_id=document_id,
+                content=content,
+                chunk_strategy="fixed",
+                token_count=len(chunk_words),
+                char_count=len(content),
+                metadata=metadata or {},
+            )
+        )
 
         start += chunk_size - overlap
         idx += 1

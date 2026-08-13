@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from app.schemas.retrieval import RetrievedChunk
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.schemas.retrieval import RetrievedChunk
 
 
 def compress_context(chunks: list[RetrievedChunk], max_chunks: int = 5) -> list[RetrievedChunk]:

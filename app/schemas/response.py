@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -28,7 +30,7 @@ class FinalResponse(BaseModel):
     schema_version: str = "1.0"
     decision: str  # "answer" | "abstain" | "error"
     answer: str | None = None
-    citations: list[dict] = Field(default_factory=list)
+    citations: list[dict[str, Any]] = Field(default_factory=list)
     transcript: str | None = None
     metrics: LatencyMetrics = Field(default_factory=LatencyMetrics)
-    errors: list[dict] = Field(default_factory=list)
+    errors: list[dict[str, Any]] = Field(default_factory=list)

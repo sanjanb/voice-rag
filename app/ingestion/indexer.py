@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from app.ingestion.chunking.base import Chunk
+if TYPE_CHECKING:
+    from app.ingestion.chunking.base import Chunk
 
 logger = logging.getLogger(__name__)
 

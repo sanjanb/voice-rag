@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +23,6 @@ async def with_timeout(
     timeout_s = timeout_ms / 1000
     try:
         return await asyncio.wait_for(fn(*args, **kwargs), timeout=timeout_s)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         logger.error("Stage '%s' timed out after %d ms", stage, timeout_ms)
         raise

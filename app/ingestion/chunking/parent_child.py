@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+from typing import Any
 
 from app.ingestion.chunking.base import Chunk
 
@@ -12,7 +13,7 @@ def parent_child_chunk(
     document_id: str,
     child_size: int = 200,
     parent_size: int = 800,
-    metadata: dict | None = None,
+    metadata: dict[str, Any] | None = None,
 ) -> list[Chunk]:
     """Create parent-child chunks.
 
@@ -21,15 +22,13 @@ def parent_child_chunk(
     """
     words = text.split()
     chunks: list[Chunk] = []
-    parent_idx = 0
 
     # Create parents
     parents: list[tuple[int, str]] = []
-    for start in range(0, len(words), parent_size):
+    for parent_idx, start in enumerate(range(0, len(words), parent_size)):
         end = min(start + parent_size, len(words))
         parent_content = " ".join(words[start:end])
         parents.append((parent_idx, parent_content))
-        parent_idx += 1
 
     # Create children within each parent
     for p_idx, parent_content in parents:
@@ -43,15 +42,17 @@ def parent_child_chunk(
                 f"{document_id}:child:{p_idx}:{c_start}".encode()
             ).hexdigest()[:16]
 
-            chunks.append(Chunk(
-                chunk_id=child_id,
-                document_id=document_id,
-                parent_id=parent_id,
-                content=child_content,
-                chunk_strategy="parent_child",
-                token_count=len(child_words[c_start:c_end]),
-                char_count=len(child_content),
-                metadata=metadata or {},
-            ))
+            chunks.append(
+                Chunk(
+                    chunk_id=child_id,
+                    document_id=document_id,
+                    parent_id=parent_id,
+                    content=child_content,
+                    chunk_strategy="parent_child",
+                    token_count=len(child_words[c_start:c_end]),
+                    char_count=len(child_content),
+                    metadata=metadata or {},
+                )
+            )
 
     return chunks

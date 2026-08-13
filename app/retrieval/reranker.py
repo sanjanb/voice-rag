@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Protocol
 
-from app.schemas.retrieval import RetrievedChunk
+if TYPE_CHECKING:
+    from app.schemas.retrieval import RetrievedChunk
 
 logger = logging.getLogger(__name__)
 
@@ -29,5 +30,9 @@ class CrossEncoderReranker:
     ) -> list[RetrievedChunk]:
         """Rerank candidates using a cross-encoder model."""
         # TODO: implement actual cross-encoder reranking
-        logger.info("Reranking %d candidates with %s (placeholder)", len(candidates), self.model_name)
+        logger.info(
+            "Reranking %d candidates with %s (placeholder)",
+            len(candidates),
+            self.model_name,
+        )
         return candidates[:top_k]

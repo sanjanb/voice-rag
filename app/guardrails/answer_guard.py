@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
-from app.schemas.generation import ClaimVerification, GeneratedAnswer
+from typing import TYPE_CHECKING
+
 from app.schemas.guardrails import GuardrailDecision
+
+if TYPE_CHECKING:
+    from app.schemas.generation import ClaimVerification, GeneratedAnswer
 
 
 class AnswerGuard:
@@ -24,7 +28,10 @@ class AnswerGuard:
             return GuardrailDecision(
                 decision="abstain",
                 confidence=0.0,
-                reason=f"{len(unsupported)} unsupported claims exceed limit {self.max_unsupported_claims}",
+                reason=(
+                    f"{len(unsupported)} unsupported claims exceed limit "
+                    f"{self.max_unsupported_claims}"
+                ),
                 stage="answer_guard",
             )
 

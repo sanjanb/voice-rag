@@ -7,13 +7,9 @@ import time
 import uuid
 from typing import Any
 
-from app.config.settings import settings
 from app.pipeline.state import PipelineStage
 from app.schemas.audio import AudioRequest, TranscriptionResult
-from app.schemas.generation import GeneratedAnswer
-from app.schemas.query import QueryAnalysis
 from app.schemas.response import FinalResponse, LatencyMetrics
-from app.schemas.retrieval import RetrievalDecision, RetrievalResult
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +24,7 @@ class PipelineOrchestrator:
         """Execute the full pipeline for an audio request."""
         request_id = request.request_id or str(uuid.uuid4())
         metrics = LatencyMetrics()
-        errors: list[dict] = []
+        errors: list[dict[str, Any]] = []
         start = time.perf_counter()
 
         try:

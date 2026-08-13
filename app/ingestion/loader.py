@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -16,10 +15,12 @@ def load_documents(data_dir: str | Path) -> list[dict[str, Any]]:
     documents = []
     for file_path in data_path.rglob("*"):
         if file_path.is_file():
-            documents.append({
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "extension": file_path.suffix.lower(),
-                "size_bytes": file_path.stat().st_size,
-            })
+            documents.append(
+                {
+                    "file_path": str(file_path),
+                    "file_name": file_path.name,
+                    "extension": file_path.suffix.lower(),
+                    "size_bytes": file_path.stat().st_size,
+                }
+            )
     return documents

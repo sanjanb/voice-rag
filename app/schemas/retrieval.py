@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -11,7 +13,7 @@ class RetrievedChunk(BaseModel):
     chunk_id: str
     document_id: str
     content: str
-    metadata: dict = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
     dense_rank: int | None = None
     sparse_rank: int | None = None
     rrf_score: float | None = None

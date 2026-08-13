@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-from app.schemas.audio import TranscriptionResult
+if TYPE_CHECKING:
+    from app.schemas.audio import TranscriptionResult
 
 
 class SpeechRecognizer(Protocol):

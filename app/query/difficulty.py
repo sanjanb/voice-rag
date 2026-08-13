@@ -16,7 +16,4 @@ def needs_reranking(analysis: QueryAnalysis, retrieval_confidence: float | None 
         return True
 
     # Multi-hop always reranks
-    if analysis.multi_hop:
-        return True
-
-    return False
+    return bool(analysis.multi_hop)

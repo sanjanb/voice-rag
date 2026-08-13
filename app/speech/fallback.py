@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
-from app.speech.base import SpeechRecognizer
-from app.schemas.audio import TranscriptionResult
+if TYPE_CHECKING:
+    from app.schemas.audio import TranscriptionResult
+    from app.speech.base import SpeechRecognizer
 
 logger = logging.getLogger(__name__)
 
