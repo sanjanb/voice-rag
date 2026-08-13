@@ -3,10 +3,10 @@ FROM python:3.11-slim
 WORKDIR /app
 
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e .
-
 COPY app/ app/
 COPY scripts/ scripts/
+
+RUN pip install --no-cache-dir -e .
 
 EXPOSE 8000
 
