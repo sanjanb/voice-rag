@@ -8,6 +8,7 @@ from app.api.routes import router
 from app.config.settings import settings
 from app.observability.logging import setup_logging
 from app.observability.tracing import setup_tracing
+from app.observability.metrics import setup_metrics
 
 app = FastAPI(
     title="VoiceRAG",
@@ -22,7 +23,8 @@ app.include_router(router)
 async def startup() -> None:
     """Initialize services on startup."""
     setup_logging(settings.log_level)
-    setup_tracing(settings.otel_exporter_otlp_endpoint)
+    setup_tracing(settings.otel_exporter_otlp_endpoint, settings.otel_service_name)
+    setup_metrics(settings.otel_exporter_otlp_endpoint, settings.otel_service_name)
 
 
 @app.on_event("shutdown")
