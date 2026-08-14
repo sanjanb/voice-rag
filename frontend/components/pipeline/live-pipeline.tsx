@@ -53,39 +53,39 @@ export function LivePipeline({ stages, totalLatencyMs }: LivePipelineProps) {
           animate={isRunning ? { scale: [1, 1.06, 1] } : {}}
           transition={isRunning ? { duration: 1, repeat: Infinity } : {}}
           className={cn(
-            "relative flex h-14 w-28 flex-col items-center justify-center rounded-xl border p-2 shadow-sm backdrop-blur-sm transition-all",
-            isComplete && "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 shadow-emerald-500/5",
-            isRunning && "border-primary bg-primary/20 text-primary shadow-[0_0_20px_rgba(59,130,246,0.25)]",
-            isSkipped && "border-amber-500/30 bg-amber-500/10 text-amber-400 opacity-60",
-            isFailed && "border-destructive bg-destructive/10 text-destructive",
-            stage.status === "waiting" && "border-border bg-card/60 text-muted-foreground"
+            "relative flex h-14 w-28 flex-col items-center justify-center rounded border p-2 shadow-sm transition-all",
+            isComplete && "border-success/30 bg-success/5 text-success",
+            isRunning && "border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(30,58,95,0.15)]",
+            isSkipped && "border-accent/20 bg-accent/5 text-accent opacity-60",
+            isFailed && "border-destructive bg-destructive/5 text-destructive",
+            stage.status === "waiting" && "border-border bg-muted text-muted-foreground"
           )}
         >
-          <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide">
+          <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold tracking-wide uppercase">
             <Icon className="h-3.5 w-3.5" />
             <span>{label}</span>
           </div>
 
-          <div className="mt-1 flex items-center gap-1 font-mono text-[10px]">
+          <div className="mt-1 flex items-center gap-1 font-mono text-[10px] font-bold">
             {isRunning && (
               <>
                 <Loader2 className="h-3 w-3 animate-spin text-primary" />
-                <span className="text-primary font-medium">RUNNING</span>
+                <span className="text-primary">[RUNNING]</span>
               </>
             )}
             {isComplete && (
               <>
-                <Check className="h-3 w-3 text-emerald-400" />
-                <span>{stage.durationMs ?? 0}ms</span>
+                <Check className="h-3 w-3 text-success" />
+                <span>[{stage.durationMs ?? 0}ms]</span>
               </>
             )}
-            {isSkipped && <span>SKIPPED</span>}
-            {stage.status === "waiting" && <span>○ WAITING</span>}
+            {isSkipped && <span>[SKIPPED]</span>}
+            {stage.status === "waiting" && <span>[WAITING]</span>}
           </div>
         </motion.div>
 
         {stage.details && (
-          <span className="mt-1 max-w-[130px] truncate font-mono text-[10px] text-muted-foreground text-center">
+          <span className="mt-1 max-w-[130px] truncate text-center font-mono text-[10px] text-muted-foreground">
             {stage.details}
           </span>
         )}
@@ -98,26 +98,26 @@ export function LivePipeline({ stages, totalLatencyMs }: LivePipelineProps) {
       <div
         className={cn(
           "h-4 w-0.5 transition-colors",
-          active ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-border"
+          active ? "bg-success shadow-[0_0_8px_rgba(5,150,105,0.3)]" : "bg-border"
         )}
       />
     </div>
   );
 
   return (
-    <div className="rounded-2xl border border-border bg-card/50 p-6 shadow-xl backdrop-blur-md">
+    <div className="rounded border border-border bg-card p-6 shadow-sm">
       <div className="flex items-center justify-between border-b border-border pb-4">
         <div>
-          <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
-            Live Pipeline Trace
+          <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+            [Live Pipeline Trace]
           </h3>
-          <p className="text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground">
             Real-time backend execution DAG & stage latencies
           </p>
         </div>
         {totalLatencyMs !== undefined && (
-          <div className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold text-primary">
-            TOTAL: {totalLatencyMs}ms
+          <div className="rounded border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-bold text-primary">
+            [TOTAL: {totalLatencyMs}ms]
           </div>
         )}
       </div>

@@ -30,6 +30,11 @@ async def startup() -> None:
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
-    """Cleanup on shutdown — flush OTel buffers."""
+    """Cleanup on shutdown — close clients, flush OTel buffers."""
+    from app.http_client import close_shared_client as close_http
+    from app.qdrant_client import close_shared_client as close_qdrant
+
+    await close_http()
+    close_qdrant()
     trace.get_tracer_provider().shutdown()
     otel_metrics.get_meter_provider().shutdown()

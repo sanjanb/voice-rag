@@ -31,11 +31,11 @@ export function SystemStatus() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-mono font-medium transition-colors shadow-sm",
+          "flex items-center gap-2 rounded border border-border px-3 py-1 font-mono text-xs font-bold transition-colors",
           overall === "READY"
-            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+            ? "border-success/30 bg-success/10 text-success hover:bg-success/20"
             : overall === "DEGRADED"
-              ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20"
+              ? "border-accent/30 bg-accent/10 text-accent hover:bg-accent/20"
               : "border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20"
         )}
       >
@@ -44,24 +44,24 @@ export function SystemStatus() {
             className={cn(
               "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
               overall === "READY"
-                ? "bg-emerald-400"
+                ? "bg-success"
                 : overall === "DEGRADED"
-                  ? "bg-amber-400"
-                  : "bg-red-400"
+                  ? "bg-accent"
+                  : "bg-destructive"
             )}
           />
           <span
             className={cn(
               "relative inline-flex h-2 w-2 rounded-full",
               overall === "READY"
-                ? "bg-emerald-500"
+                ? "bg-success"
                 : overall === "DEGRADED"
-                  ? "bg-amber-500"
-                  : "bg-red-500"
+                  ? "bg-accent"
+                  : "bg-destructive"
             )}
           />
         </span>
-        <span>{overall}</span>
+        <span>[{overall}]</span>
       </button>
 
       {isOpen && (
@@ -70,12 +70,12 @@ export function SystemStatus() {
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 z-50 mt-2 w-80 rounded-xl border border-border bg-card p-4 shadow-xl backdrop-blur-md">
+          <div className="absolute right-0 z-50 mt-2 w-80 rounded border border-border bg-card p-4 shadow-lg">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
                 <Activity className="h-4 w-4 text-primary" />
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground">
-                  System Health
+                <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+                  [System Health]
                 </h4>
               </div>
               <button
@@ -94,23 +94,23 @@ export function SystemStatus() {
                   className="flex items-center justify-between text-xs"
                 >
                   <span className="font-medium text-foreground">{service.name}</span>
-                  <div className="flex items-center gap-1.5 font-mono">
+                  <div className="flex items-center gap-1.5 font-mono text-xs font-bold">
                     {service.status === "healthy" && (
                       <>
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                        <span className="text-emerald-500">Healthy</span>
+                        <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                        <span className="text-success">[Healthy]</span>
                       </>
                     )}
                     {service.status === "degraded" && (
                       <>
-                        <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
-                        <span className="text-amber-500">Degraded</span>
+                        <AlertTriangle className="h-3.5 w-3.5 text-accent" />
+                        <span className="text-accent">[Degraded]</span>
                       </>
                     )}
                     {service.status === "unavailable" && (
                       <>
                         <XCircle className="h-3.5 w-3.5 text-destructive" />
-                        <span className="text-destructive">Unavailable</span>
+                        <span className="text-destructive">[Unavailable]</span>
                       </>
                     )}
                   </div>
@@ -118,7 +118,7 @@ export function SystemStatus() {
               ))}
             </div>
 
-            <div className="mt-4 border-t border-border pt-2 text-[10px] font-mono text-muted-foreground text-right">
+            <div className="mt-4 border-t border-border pt-2 text-right font-mono text-[10px] text-muted-foreground">
               Last checked: {status?.lastChecked || "Just now"}
             </div>
           </div>

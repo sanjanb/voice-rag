@@ -23,17 +23,17 @@ interface VoiceStatusBarProps {
 }
 
 const stateLabel: Record<RecorderState, string> = {
-  idle: "Ready",
-  listening: "Requesting microphone…",
-  recording: "Recording",
-  stopped: "Recording complete",
-  transcribing: "Transcribing…",
-  query_ready: "Ready to ask",
+  idle: "[Ready]",
+  listening: "[Requesting microphone...]",
+  recording: "[Recording]",
+  stopped: "[Recording complete]",
+  transcribing: "[Transcribing...]",
+  query_ready: "[Ready to ask]",
 };
 
 const stateIndicator: Record<RecorderState, { symbol: string; color: string }> = {
   idle: { symbol: "○", color: "text-muted-foreground" },
-  listening: { symbol: "◉", color: "text-warning" },
+  listening: { symbol: "◉", color: "text-accent" },
   recording: { symbol: "◉", color: "text-destructive" },
   stopped: { symbol: "✓", color: "text-success" },
   transcribing: { symbol: "◎", color: "text-primary animate-spin" },
@@ -57,7 +57,7 @@ export function VoiceStatusBar({
   return (
     <div
       className={cn(
-        "flex items-center justify-center gap-4 text-xs text-muted-foreground",
+        "flex items-center justify-center gap-4 font-mono text-xs text-muted-foreground",
         className
       )}
     >
@@ -68,20 +68,22 @@ export function VoiceStatusBar({
         ) : micPermission === "denied" ? (
           <MicOff className="h-3 w-3 text-destructive" />
         ) : (
-          <AlertCircle className="h-3 w-3 text-warning" />
+          <AlertCircle className="h-3 w-3 text-accent" />
         )}
-        {micPermission === "granted"
-          ? "Mic connected"
-          : micPermission === "denied"
-            ? "Mic denied"
-            : "Mic not yet requested"}
+        <span className="font-bold">
+          {micPermission === "granted"
+            ? "[Mic connected]"
+            : micPermission === "denied"
+              ? "[Mic denied]"
+              : "[Mic not yet requested]"}
+        </span>
       </span>
 
       <span className="h-3 w-px bg-border" />
 
       {/* Current state */}
       <span className="inline-flex items-center gap-1.5">
-        <span className={cn("font-mono text-xs", indicator.color)}>
+        <span className={cn("font-mono text-xs font-bold", indicator.color)}>
           {indicator.symbol}
         </span>
         {stateLabel[state]}
@@ -91,8 +93,8 @@ export function VoiceStatusBar({
       {duration !== undefined && duration > 0 && (
         <>
           <span className="h-3 w-px bg-border" />
-          <span className="font-mono text-xs tabular-nums">
-            {formatDuration(duration)}
+          <span className="font-mono text-xs font-bold tabular-nums">
+            [{formatDuration(duration)}]
           </span>
         </>
       )}

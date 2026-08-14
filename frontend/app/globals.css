@@ -1,41 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Berkeley+Mono:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "Berkeley Mono", "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "Berkeley Mono", "JetBrains Mono", ui-monospace, monospace;
 
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-card: #0c0c0e;
-  --color-card-foreground: #fafafa;
-  --color-popover: #0c0c0e;
-  --color-popover-foreground: #fafafa;
-  --color-primary: #3b82f6;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #1c1c1f;
-  --color-secondary-foreground: #fafafa;
-  --color-muted: #18181b;
-  --color-muted-foreground: #a1a1aa;
-  --color-accent: #1c1c1f;
-  --color-accent-foreground: #fafafa;
-  --color-destructive: #ef4444;
-  --color-destructive-foreground: #ffffff;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-border: #27272a;
-  --color-input: #27272a;
-  --color-ring: #3b82f6;
-  --color-sidebar: #0c0c0e;
-  --color-sidebar-foreground: #fafafa;
-  --color-sidebar-accent: #1c1c1f;
-  --color-sidebar-accent-foreground: #fafafa;
-  --color-sidebar-border: #27272a;
-  --color-sidebar-ring: #3b82f6;
+  --color-background: #FFF8F0;
+  --color-foreground: #1A1A1A;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1A1A1A;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #1A1A1A;
+  --color-primary: #1E3A5F;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F3F4F6;
+  --color-secondary-foreground: #1A1A1A;
+  --color-muted: #F9FAFB;
+  --color-muted-foreground: #6B7280;
+  --color-accent: #D97706;
+  --color-accent-foreground: #FFFFFF;
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-border: #E5E7EB;
+  --color-input: #E5E7EB;
+  --color-ring: #1E3A5F;
+  --color-sidebar: #F9FAFB;
+  --color-sidebar-foreground: #1A1A1A;
+  --color-sidebar-accent: #E5E7EB;
+  --color-sidebar-accent-foreground: #1A1A1A;
+  --color-sidebar-border: #E5E7EB;
+  --color-sidebar-ring: #1E3A5F;
 
   --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
   --radius-xl: 0.75rem;
 }
 

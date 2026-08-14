@@ -30,36 +30,41 @@ export function TranscriptPreview({
     return (
       <div className={cn("flex flex-col items-center gap-3", className)}>
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Transcribing audio…</p>
+        <p className="font-mono text-xs text-muted-foreground">[Transcribing audio...]</p>
       </div>
     );
   }
 
   return (
     <div className={cn("flex flex-col gap-3", className)}>
-      <textarea
-        value={edited}
-        onChange={(e) => setEdited(e.target.value)}
-        rows={3}
-        className="w-full resize-none rounded-lg border border-border bg-secondary px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-        placeholder="Your transcribed question will appear here…"
-      />
+      <div className="relative">
+        <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          [Transcribed Query]
+        </label>
+        <textarea
+          value={edited}
+          onChange={(e) => setEdited(e.target.value)}
+          rows={3}
+          className="w-full resize-none rounded border border-border bg-background px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          placeholder="Your transcribed question will appear here..."
+        />
+      </div>
       <div className="flex items-center justify-center gap-3">
         <Button
           variant="outline"
           onClick={onReRecord}
-          className="gap-2"
+          className="gap-2 rounded border-border bg-muted font-mono text-xs font-bold hover:bg-muted/80"
         >
           <RotateCcw className="h-4 w-4" />
-          Re-record
+          [Re-record]
         </Button>
         <Button
           onClick={() => onSubmit(edited)}
           disabled={!edited.trim()}
-          className="gap-2"
+          className="gap-2 rounded bg-primary px-4 font-mono text-xs font-bold text-primary-foreground hover:bg-primary/90"
         >
           <Send className="h-4 w-4" />
-          Ask
+          [Ask]
         </Button>
       </div>
     </div>

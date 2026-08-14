@@ -1,0 +1,538 @@
+{
+  "best_config": {
+    "min_confidence": 0.3,
+    "reranker_difficulty_threshold": 0.5,
+    "max_unsupported_claims": 1
+  },
+  "best_score": 0.5282051282051282,
+  "all_results": [
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6923076923076923,
+        "abstention_rate": 0.3076923076923077,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.02564102564102564,
+        "mean_mrr": 0.07692307692307693,
+        "mean_ndcg@5": 0.07692307692307693,
+        "mean_citation_precision": 0.057692307692307696,
+        "mean_citation_recall": 0.02564102564102564,
+        "mean_citation_coverage": 0.6923076923076923,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.3076923076923077,
+        "latency_p50": 136.52984456329244,
+        "latency_p95": 174.31754401161118
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6923076923076923,
+        "abstention_rate": 0.3076923076923077,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.019230769230769232,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.019230769230769232,
+        "mean_citation_coverage": 0.6923076923076923,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.3076923076923077,
+        "latency_p50": 150.88494154023192,
+        "latency_p95": 189.22344074040092
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6538461538461539,
+        "abstention_rate": 0.34615384615384615,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.019230769230769232,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.019230769230769232,
+        "mean_citation_coverage": 0.6538461538461539,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.34615384615384615,
+        "latency_p50": 133.02283956333065,
+        "latency_p95": 192.19370373143587
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6538461538461539,
+        "abstention_rate": 0.34615384615384615,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.6538461538461539,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.34615384615384615,
+        "latency_p50": 124.3046481399834,
+        "latency_p95": 192.6821105113978
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6153846153846154,
+        "abstention_rate": 0.38461538461538464,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.019230769230769232,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.038461538461538464,
+        "mean_citation_recall": 0.019230769230769232,
+        "mean_citation_coverage": 0.6153846153846154,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.38461538461538464,
+        "latency_p50": 151.56573209541557,
+        "latency_p95": 181.335013314303
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.6153846153846154,
+        "abstention_rate": 0.38461538461538464,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.6153846153846154,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.38461538461538464,
+        "latency_p50": 113.56197041785143,
+        "latency_p95": 177.66174542837626
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.5769230769230769,
+        "abstention_rate": 0.4230769230769231,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.5769230769230769,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.4230769230769231,
+        "latency_p50": 111.53478195378533,
+        "latency_p95": 198.23543646659056
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.5769230769230769,
+        "abstention_rate": 0.4230769230769231,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.5769230769230769,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.4230769230769231,
+        "latency_p50": 126.28961819294635,
+        "latency_p95": 188.81137783162282
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.5384615384615384,
+        "abstention_rate": 0.46153846153846156,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.5384615384615384,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.46153846153846156,
+        "latency_p50": 136.35230762672293,
+        "latency_p95": 188.0874363126013
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.46153846153846156,
+        "abstention_rate": 0.5384615384615384,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.46153846153846156,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.5384615384615384,
+        "latency_p50": 149.40215618813437,
+        "latency_p95": 193.3216605368788
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.46153846153846156,
+        "abstention_rate": 0.5384615384615384,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.46153846153846156,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.5384615384615384,
+        "latency_p50": 122.64193264604292,
+        "latency_p95": 177.0316312633475
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.4230769230769231,
+        "abstention_rate": 0.5769230769230769,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.4230769230769231,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.5769230769230769,
+        "latency_p50": 106.43737433677265,
+        "latency_p95": 195.52474766515678
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.38461538461538464,
+        "abstention_rate": 0.6153846153846154,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.019230769230769232,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.038461538461538464,
+        "mean_citation_recall": 0.019230769230769232,
+        "mean_citation_coverage": 0.38461538461538464,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.6153846153846154,
+        "latency_p50": 121.27644441203299,
+        "latency_p95": 185.23252375525541
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.38461538461538464,
+        "abstention_rate": 0.6153846153846154,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.38461538461538464,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.6153846153846154,
+        "latency_p50": 144.74082368423643,
+        "latency_p95": 194.44538224485888
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.1,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.3076923076923077,
+        "abstention_rate": 0.6923076923076923,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.01282051282051282,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.3076923076923077,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.6923076923076923,
+        "latency_p50": 93.925098484593,
+        "latency_p95": 193.98599060046524
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.3076923076923077,
+        "abstention_rate": 0.6923076923076923,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.3076923076923077,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.6923076923076923,
+        "latency_p50": 147.6439522765889,
+        "latency_p95": 195.14303062684044
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.2,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.3076923076923077,
+        "abstention_rate": 0.6923076923076923,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.3076923076923077,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.6923076923076923,
+        "latency_p50": 117.67227358174107,
+        "latency_p95": 187.21295674337856
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.2692307692307692,
+        "abstention_rate": 0.7307692307692307,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.038461538461538464,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.01282051282051282,
+        "mean_citation_recall": 0.038461538461538464,
+        "mean_citation_coverage": 0.2692307692307692,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.7307692307692307,
+        "latency_p50": 124.18897901745862,
+        "latency_p95": 182.681356362709
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.3,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.2692307692307692,
+        "abstention_rate": 0.7307692307692307,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.038461538461538464,
+        "mean_ndcg@5": 0.038461538461538464,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.2692307692307692,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.7307692307692307,
+        "latency_p50": 144.8749770857595,
+        "latency_p95": 193.20620036148094
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 1
+      },
+      "metrics": {
+        "answer_rate": 0.2692307692307692,
+        "abstention_rate": 0.7307692307692307,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.01282051282051282,
+        "mean_mrr": 0.019230769230769232,
+        "mean_ndcg@5": 0.024266528983517596,
+        "mean_citation_precision": 0.019230769230769232,
+        "mean_citation_recall": 0.01282051282051282,
+        "mean_citation_coverage": 0.2692307692307692,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.7307692307692307,
+        "latency_p50": 133.19377834651192,
+        "latency_p95": 188.2948533857034
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.23076923076923078,
+        "abstention_rate": 0.7692307692307693,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.019230769230769232,
+        "mean_mrr": 0.01282051282051282,
+        "mean_ndcg@5": 0.019230769230769232,
+        "mean_citation_precision": 0.01282051282051282,
+        "mean_citation_recall": 0.019230769230769232,
+        "mean_citation_coverage": 0.23076923076923078,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.7692307692307693,
+        "latency_p50": 117.31865870289364,
+        "latency_p95": 177.88319484921334
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.23076923076923078,
+        "abstention_rate": 0.7692307692307693,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.23076923076923078,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.7692307692307693,
+        "latency_p50": 167.70984298648182,
+        "latency_p95": 196.43538150749163
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.3,
+        "reranker_difficulty_threshold": 0.4,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.19230769230769232,
+        "abstention_rate": 0.8076923076923077,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.19230769230769232,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.8076923076923077,
+        "latency_p50": 120.83245719227611,
+        "latency_p95": 189.20991000406033
+      }
+    },
+    {
+      "config": {
+        "min_confidence": 0.5,
+        "reranker_difficulty_threshold": 0.5,
+        "max_unsupported_claims": 0
+      },
+      "metrics": {
+        "answer_rate": 0.11538461538461539,
+        "abstention_rate": 0.8846153846153846,
+        "error_rate": 0.0,
+        "mean_recall@5": 0.0,
+        "mean_mrr": 0.0,
+        "mean_ndcg@5": 0.0,
+        "mean_citation_precision": 0.0,
+        "mean_citation_recall": 0.0,
+        "mean_citation_coverage": 0.11538461538461539,
+        "unsupported_answer_rate": 0.0,
+        "false_abstention_rate": 0.8846153846153846,
+        "latency_p50": 125.48333241256387,
+        "latency_p95": 189.21738242702963
+      }
+    }
+  ]
+}

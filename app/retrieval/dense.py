@@ -6,8 +6,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from qdrant_client import QdrantClient
-
-from app.config.settings import settings
+from app.qdrant_client import get_shared_client
 from app.embeddings.embedder import Embedder
 from app.schemas.retrieval import RetrievedChunk
 
@@ -22,7 +21,7 @@ class DenseRetriever:
 
     def __init__(self, embedder: Embedder, qdrant_client: QdrantClient | None = None):
         self.embedder = embedder
-        self._client = qdrant_client or QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+        self._client = qdrant_client or get_shared_client()
         self._collection = settings.qdrant_collection
 
     async def search(self, query: str, top_n: int = 20) -> list[RetrievedChunk]:

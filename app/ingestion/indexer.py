@@ -11,6 +11,7 @@ from qdrant_client.models import Distance, PointStruct, VectorParams
 
 from app.config.settings import settings
 from app.embeddings.embedder import Embedder
+from app.qdrant_client import get_shared_client
 
 if TYPE_CHECKING:
     from app.ingestion.chunking.base import Chunk
@@ -23,7 +24,7 @@ class Indexer:
 
     def __init__(self, embedder: Embedder, qdrant_client: QdrantClient | None = None) -> None:
         self.embedder = embedder
-        self._client = qdrant_client or QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+        self._client = qdrant_client or get_shared_client()
         self._collection = settings.qdrant_collection
 
     async def ensure_collection(self) -> None:

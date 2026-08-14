@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import httpx
 import json
 import logging
 
 from app.config.settings import settings
+from app.http_client import get_shared_client
 from app.schemas.generation import ClaimVerification, GeneratedAnswer
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ class Verifier:
 
     def __init__(self, model: str = "gpt-4o-mini") -> None:
         self.model = model
+        self._client = get_shared_client()
 
     async def verify(self, answer: GeneratedAnswer, evidence: str) -> list[ClaimVerification]:
         """Verify each claim in the answer against the evidence."""
@@ -67,16 +68,15 @@ class Verifier:
         }
 
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                resp = await client.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                content = data["choices"][0]["message"]["content"]
-                parsed = json.loads(content)
+            resp = await self._client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json=payload,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            parsed = json.loads(content)
 
             verifications = []
             for v in parsed.get("verifications", []):

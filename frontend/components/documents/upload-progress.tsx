@@ -34,16 +34,16 @@ const statusColors = {
   pending: "text-muted-foreground",
   uploading: "text-primary",
   processing: "text-primary",
-  complete: "text-emerald-400",
-  error: "text-red-400",
+  complete: "text-success",
+  error: "text-destructive",
 };
 
 const statusLabels = {
-  pending: "Waiting",
-  uploading: "Uploading",
-  processing: "Processing",
-  complete: "Complete",
-  error: "Failed",
+  pending: "[Waiting]",
+  uploading: "[Uploading]",
+  processing: "[Processing]",
+  complete: "[Complete]",
+  error: "[Failed]",
 };
 
 export function UploadProgress({
@@ -72,15 +72,15 @@ export function UploadProgress({
   if (files.length === 0) return null;
 
   return (
-    <Card className="space-y-4">
+    <Card className="mt-4 space-y-4">
       <CardContent className="space-y-4 p-6">
         {/* Overall Progress */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="font-medium">Overall Progress</span>
-            <span className="font-mono text-muted-foreground">{overallProgress}%</span>
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-xs font-bold text-foreground">[Overall Progress]</span>
+            <span className="font-mono text-xs font-bold text-muted-foreground">{overallProgress}%</span>
           </div>
-          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
             <div
               className="h-full bg-primary transition-all duration-300 ease-out"
               style={{ width: `${overallProgress}%` }}
@@ -89,7 +89,7 @@ export function UploadProgress({
         </div>
 
         {/* Status Summary */}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 font-mono text-xs text-muted-foreground">
           {pendingCount > 0 && (
             <span className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-muted-foreground" />
@@ -104,20 +104,20 @@ export function UploadProgress({
           )}
           {completeCount > 0 && (
             <span className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-success" />
               {completeCount} complete
             </span>
           )}
           {errorCount > 0 && (
             <span className="flex items-center gap-1">
-              <span className="h-2 w-2 rounded-full bg-red-400" />
+              <span className="h-2 w-2 rounded-full bg-destructive" />
               {errorCount} failed
             </span>
           )}
         </div>
 
         {/* File List */}
-        <div className="space-y-2 max-h-64 overflow-y-auto">
+        <div className="max-h-64 space-y-2 overflow-y-auto">
           {files.map((upload) => {
             const Icon = statusIcons[upload.status];
             const color = statusColors[upload.status];
@@ -126,25 +126,25 @@ export function UploadProgress({
             return (
               <div
                 key={upload.id}
-                className="flex items-center gap-3 rounded-lg border p-3"
+                className="flex items-center gap-3 rounded border border-border p-3"
               >
                 <Icon className={cn("h-4 w-4 shrink-0", color)} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{upload.file.name}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-mono text-xs font-medium text-foreground">{upload.file.name}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${upload.progress}%` }}
                       />
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground w-10 text-right">
+                    <span className="w-10 text-right font-mono text-[10px] font-bold text-muted-foreground">
                       {upload.progress}%
                     </span>
-                    <span className={cn("text-xs", color)}>{label}</span>
+                    <span className={cn("font-mono text-[10px] font-bold", color)}>{label}</span>
                   </div>
                   {upload.error && (
-                    <p className="mt-1 text-xs text-red-400">{upload.error}</p>
+                    <p className="mt-1 font-mono text-[10px] text-destructive">{upload.error}</p>
                   )}
                 </div>
                 <Button
@@ -162,12 +162,21 @@ export function UploadProgress({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-2 pt-2 border-t">
-          <Button variant="outline" onClick={onClear} disabled={isUploading}>
-            Clear All
+        <div className="flex items-center justify-end gap-2 border-t border-border pt-2">
+          <Button
+            variant="outline"
+            onClick={onClear}
+            disabled={isUploading}
+            className="rounded border-border bg-muted font-mono text-xs font-bold hover:bg-muted/80"
+          >
+            [Clear All]
           </Button>
-          <Button onClick={onUploadAll} disabled={isUploading || pendingCount === 0}>
-            {isUploading ? "Uploading..." : "Upload All"}
+          <Button
+            onClick={onUploadAll}
+            disabled={isUploading || pendingCount === 0}
+            className="rounded bg-primary px-4 font-mono text-xs font-bold text-primary-foreground hover:bg-primary/90"
+          >
+            {isUploading ? "[Uploading...]" : "[Upload All]"}
           </Button>
         </div>
       </CardContent>

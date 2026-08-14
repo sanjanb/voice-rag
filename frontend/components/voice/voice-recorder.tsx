@@ -239,18 +239,18 @@ export function VoiceRecorder({
           whileTap={{ scale: 0.95 }}
           animate={{
             backgroundColor: isRecording
-              ? "rgb(239, 68, 68)"
+              ? "rgb(220, 38, 38)"
               : isListening
-                ? "rgb(59, 130, 246)"
+                ? "rgb(30, 58, 95)"
                 : "transparent",
           }}
           transition={{ duration: 0.3 }}
           className={cn(
             "relative z-10 flex h-20 w-20 items-center justify-center rounded-full border-2 transition-shadow",
             isRecording
-              ? "border-destructive shadow-[0_0_30px_rgba(239,68,68,0.3)]"
+              ? "border-destructive shadow-[0_0_30px_rgba(220,38,38,0.3)]"
               : isListening
-                ? "border-primary shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+                ? "border-primary shadow-[0_0_20px_rgba(30,58,95,0.2)]"
                 : "border-muted-foreground/30 hover:border-muted-foreground/50",
             isTranscribing && "pointer-events-none opacity-50"
           )}
@@ -301,14 +301,14 @@ export function VoiceRecorder({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="text-sm text-muted-foreground"
+          className="font-mono text-xs text-muted-foreground"
         >
-          {state === "idle" && "Tap to start recording"}
-          {state === "listening" && "Requesting microphone access…"}
-          {state === "recording" && "Tap to stop recording"}
-          {state === "stopped" && "Processing…"}
-          {state === "transcribing" && "Transcribing audio…"}
-          {state === "query_ready" && "Tap to record a new question"}
+          {state === "idle" && "[Tap to start recording]"}
+          {state === "listening" && "[Requesting microphone access...]"}
+          {state === "recording" && "[Tap to stop recording]"}
+          {state === "stopped" && "[Processing...]"}
+          {state === "transcribing" && "[Transcribing audio...]"}
+          {state === "query_ready" && "[Tap to record a new question]"}
         </motion.p>
       </AnimatePresence>
 

@@ -20,8 +20,8 @@ export default function SettingsPage() {
 
   if (!settings) {
     return (
-      <div className="rounded-2xl border border-border p-8 text-center text-muted-foreground font-mono text-xs">
-        Loading system configuration settings...
+      <div className="rounded border border-border bg-card p-8 text-center font-mono text-xs text-muted-foreground">
+        [Loading system configuration settings...]
       </div>
     );
   }
@@ -31,9 +31,9 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border pb-4">
         <div>
-          <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-primary">
             <Settings className="h-4 w-4" />
-            <span>SYSTEM CONFIGURATION</span>
+            <span>[SYSTEM CONFIGURATION]</span>
           </div>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-foreground">
             Engine Settings
@@ -45,27 +45,27 @@ export default function SettingsPage() {
 
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-lg hover:bg-primary/90 transition-all"
+          className="flex items-center gap-2 rounded bg-primary px-4 py-2 font-mono text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 transition-all"
         >
           {saved ? <CheckCircle2 className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-          <span>{saved ? "Saved Configuration" : "Save Configuration"}</span>
+          <span>{saved ? "[Saved]" : "[Save Config]"}</span>
         </button>
       </div>
 
       <div className="space-y-6 font-mono text-xs">
         {/* VOICE SECTION */}
-        <div className="rounded-2xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-md space-y-4">
-          <div className="flex items-center gap-2 text-foreground font-bold border-b border-border pb-3">
-            <Mic className="h-4 w-4 text-emerald-400" />
-            <span>VOICE & STT PROVIDERS</span>
+        <div className="rounded border border-border bg-card p-6 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3 font-bold text-foreground">
+            <Mic className="h-4 w-4 text-emerald-600" />
+            <span>[VOICE & STT PROVIDERS]</span>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-muted-foreground mb-1">STT Provider</label>
+              <label className="mb-1 block text-muted-foreground font-bold">STT Provider</label>
               <select
                 value={settings.sttProvider}
                 onChange={(e) => setSettings({ ...settings, sttProvider: e.target.value as any })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="Hosted">Hosted Whisper v3</option>
                 <option value="Local">Local Whisper.cpp</option>
@@ -73,11 +73,11 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">Fallback Provider</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Fallback Provider</label>
               <select
                 value={settings.sttFallback}
                 onChange={(e) => setSettings({ ...settings, sttFallback: e.target.value as any })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="Local">Local Whisper.cpp</option>
                 <option value="None">None</option>
@@ -87,55 +87,55 @@ export default function SettingsPage() {
         </div>
 
         {/* RETRIEVAL SECTION */}
-        <div className="rounded-2xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-md space-y-4">
-          <div className="flex items-center gap-2 text-foreground font-bold border-b border-border pb-3">
-            <Layers className="h-4 w-4 text-blue-400" />
-            <span>HYBRID RETRIEVAL & FUSION</span>
+        <div className="rounded border border-border bg-card p-6 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3 font-bold text-foreground">
+            <Layers className="h-4 w-4 text-primary" />
+            <span>[HYBRID RETRIEVAL & FUSION]</span>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="block text-muted-foreground mb-1">Dense Top-K</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Dense Top-K</label>
               <input
                 type="number"
                 value={settings.denseTopK}
                 onChange={(e) => setSettings({ ...settings, denseTopK: parseInt(e.target.value) || 10 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">Sparse BM25 Top-K</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Sparse BM25 Top-K</label>
               <input
                 type="number"
                 value={settings.sparseTopK}
                 onChange={(e) => setSettings({ ...settings, sparseTopK: parseInt(e.target.value) || 10 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">RRF Constant (k)</label>
+              <label className="mb-1 block text-muted-foreground font-bold">RRF Constant (k)</label>
               <input
                 type="number"
                 value={settings.rrfK}
                 onChange={(e) => setSettings({ ...settings, rrfK: parseInt(e.target.value) || 60 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
         </div>
 
         {/* RERANKING & GUARDRAILS SECTION */}
-        <div className="rounded-2xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-md space-y-4">
-          <div className="flex items-center gap-2 text-foreground font-bold border-b border-border pb-3">
-            <Cpu className="h-4 w-4 text-purple-400" />
-            <span>RERANKING & GUARDRAILS</span>
+        <div className="rounded border border-border bg-card p-6 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3 font-bold text-foreground">
+            <Cpu className="h-4 w-4 text-accent" />
+            <span>[RERANKING & GUARDRAILS]</span>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label className="block text-muted-foreground mb-1">Reranking Mode</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Reranking Mode</label>
               <select
                 value={settings.rerankingMode}
                 onChange={(e) => setSettings({ ...settings, rerankingMode: e.target.value as any })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <option value="Adaptive">Adaptive Reranking</option>
                 <option value="Always">Always Rerank</option>
@@ -143,52 +143,52 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">Rerank Threshold</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Rerank Threshold</label>
               <input
                 type="number"
                 step="0.01"
                 value={settings.rerankingThreshold}
                 onChange={(e) => setSettings({ ...settings, rerankingThreshold: parseFloat(e.target.value) || 0.72 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">Abstention Threshold</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Abstention Threshold</label>
               <input
                 type="number"
                 step="0.01"
                 value={settings.abstentionThreshold}
                 onChange={(e) => setSettings({ ...settings, abstentionThreshold: parseFloat(e.target.value) || 0.72 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>
         </div>
 
         {/* GENERATION SECTION */}
-        <div className="rounded-2xl border border-border bg-card/60 p-6 shadow-xl backdrop-blur-md space-y-4">
-          <div className="flex items-center gap-2 text-foreground font-bold border-b border-border pb-3">
-            <ShieldCheck className="h-4 w-4 text-amber-400" />
-            <span>GENERATION & GROUNDING</span>
+        <div className="rounded border border-border bg-card p-6 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 border-b border-border pb-3 font-bold text-foreground">
+            <ShieldCheck className="h-4 w-4 text-success" />
+            <span>[GENERATION & GROUNDING]</span>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-muted-foreground mb-1">Generator LLM Model</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Generator LLM Model</label>
               <input
                 type="text"
                 value={settings.generationModel}
                 onChange={(e) => setSettings({ ...settings, generationModel: e.target.value })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
             <div>
-              <label className="block text-muted-foreground mb-1">Temperature</label>
+              <label className="mb-1 block text-muted-foreground font-bold">Temperature</label>
               <input
                 type="number"
                 step="0.1"
                 value={settings.generationTemperature}
                 onChange={(e) => setSettings({ ...settings, generationTemperature: parseFloat(e.target.value) || 0.0 })}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground font-medium focus:outline-none"
+                className="w-full rounded border border-border bg-background px-3 py-2 font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
           </div>

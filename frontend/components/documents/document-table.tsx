@@ -34,10 +34,10 @@ const statusConfig: Record<Document["status"], { label: string; variant: "warnin
 };
 
 const statusDot: Record<Document["status"], string> = {
-  processing: "bg-amber-400",
-  ready: "bg-emerald-400",
-  failed: "bg-red-400",
-  uploading: "bg-amber-400",
+  processing: "bg-accent",
+  ready: "bg-success",
+  failed: "bg-destructive",
+  uploading: "bg-accent",
 };
 
 interface DocumentTableProps {
@@ -70,24 +70,24 @@ export function DocumentTable({ documents, onRowClick }: DocumentTableProps) {
 
   if (documents.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed py-16 text-center">
-        <FileText className="mx-auto h-10 w-10 text-muted-foreground/50" />
-        <p className="mt-3 text-sm text-muted-foreground">No documents yet.</p>
-        <p className="text-xs text-muted-foreground/70">Upload a file to get started.</p>
+      <div className="flex flex-col items-center justify-center rounded border border-dashed py-16 text-center">
+        <FileText className="h-10 w-10 text-muted-foreground/50" />
+        <p className="mt-3 font-mono text-xs font-bold text-foreground">[No Documents]</p>
+        <p className="mt-1 text-xs text-muted-foreground">Upload a file to get started.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-hidden">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="border-b border-border hover:bg-transparent">
             {(["name", "type", "status", "chunks", "date"] as SortKey[]).map((key) => (
               <TableHead key={key}>
                 <button
                   onClick={() => toggleSort(key)}
-                  className="inline-flex items-center gap-1 text-xs uppercase tracking-wider hover:text-foreground"
+                  className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
                 >
                   {key === "chunks" ? "Chunks" : key.charAt(0).toUpperCase() + key.slice(1)}
                   <ArrowUpDown className="h-3 w-3" />
@@ -104,20 +104,22 @@ export function DocumentTable({ documents, onRowClick }: DocumentTableProps) {
               <TableRow
                 key={doc.id}
                 onClick={() => onRowClick?.(doc)}
-                className="cursor-pointer"
+                className="cursor-pointer border-b border-border/50 hover:bg-muted/50"
               >
-                <TableCell className="font-medium">{doc.name}</TableCell>
+                <TableCell className="font-mono text-sm font-medium">{doc.name}</TableCell>
                 <TableCell>
-                  <span className="font-mono text-xs text-muted-foreground">{doc.type}</span>
+                  <span className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
+                    {doc.type}
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={cfg.variant} className="gap-1.5">
+                  <Badge variant={cfg.variant} className="gap-1.5 font-mono text-[10px] font-bold">
                     <span className={cn("h-1.5 w-1.5 rounded-full", statusDot[doc.status])} />
                     {cfg.label}
                   </Badge>
                 </TableCell>
-                <TableCell className="font-mono text-muted-foreground">{doc.chunks}</TableCell>
-                <TableCell className="text-muted-foreground">{doc.date}</TableCell>
+                <TableCell className="font-mono text-xs font-bold text-muted-foreground">{doc.chunks}</TableCell>
+                <TableCell className="font-mono text-xs text-muted-foreground">{doc.date}</TableCell>
                 <TableCell>
                   <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
                 </TableCell>
@@ -129,4 +131,3 @@ export function DocumentTable({ documents, onRowClick }: DocumentTableProps) {
     </div>
   );
 }
-

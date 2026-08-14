@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Upload, X, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import { Upload, X, FileText, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DocumentTable, type Document } from "@/components/documents/document-table";
@@ -157,14 +157,23 @@ export default function DocumentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Documents</h1>
-          <p className="mt-1 text-muted-foreground">
+          <div className="flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+            <FileText className="h-4 w-4" />
+            <span>[DOCUMENT MANAGEMENT]</span>
+          </div>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-foreground">
+            Documents
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground">
             Manage files in your knowledge base.
           </p>
         </div>
-        <Button onClick={() => setShowUpload(!showUpload)} className="gap-2">
-          <Upload className="h-4 w-4" />
-          Upload
+        <Button
+          onClick={() => setShowUpload(!showUpload)}
+          className="gap-2 rounded bg-primary px-4 py-2 font-mono text-xs font-bold text-primary-foreground hover:bg-primary/90"
+        >
+          {showUpload ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+          {showUpload ? "Cancel" : "Upload Files"}
         </Button>
       </div>
 
@@ -173,15 +182,13 @@ export default function DocumentsPage() {
 
       {/* Upload Zone */}
       {showUpload && (
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden border-primary/20">
+          <div className="border-b border-border bg-muted/50 px-4 py-3">
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+              [Upload Documents]
+            </h2>
+          </div>
           <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Upload Documents</h2>
-              <Button variant="ghost" size="icon" onClick={() => setShowUpload(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-
             <UploadZone onUpload={addFiles} />
 
             <UploadProgress
@@ -196,12 +203,26 @@ export default function DocumentsPage() {
       )}
 
       {/* Document Table */}
-      <DocumentTable
-        documents={mockDocuments}
-        onRowClick={(doc) => {
-          // Navigation handled by DocumentTable via Link
-        }}
-      />
+      <Card>
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <h2 className="font-mono text-xs font-bold uppercase tracking-wider text-foreground">
+              [Knowledge Base Documents]
+            </h2>
+            <span className="font-mono text-xs text-muted-foreground">
+              {mockDocuments.length} files · {mockKBStatus.totalChunks} chunks
+            </span>
+          </div>
+        </div>
+        <CardContent className="p-0">
+          <DocumentTable
+            documents={mockDocuments}
+            onRowClick={(doc) => {
+              // Navigation handled by DocumentTable via Link
+            }}
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

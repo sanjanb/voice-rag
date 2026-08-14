@@ -107,11 +107,11 @@ export default function AskPage() {
     <div className="space-y-8 pb-12">
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-mono font-semibold text-primary">
+        <div className="inline-flex items-center gap-2 rounded border border-primary/20 bg-primary/5 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider text-primary">
           <Sparkles className="h-3.5 w-3.5" />
-          <span>RESEARCH LAB VOICE INTERFACE</span>
+          <span>[RESEARCH LAB VOICE INTERFACE]</span>
         </div>
-        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
           Ask Your Documents
         </h1>
         <p className="mt-1.5 text-sm text-muted-foreground">
@@ -120,7 +120,7 @@ export default function AskPage() {
       </div>
 
       {/* Main Recorder Section */}
-      <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-6 rounded-2xl border border-border bg-card/50 p-8 shadow-xl backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-xl flex-col items-center gap-6 rounded border border-border bg-card p-8 shadow-md">
         <VoiceRecorder
           onTranscriptReady={setTranscript}
           onRecordingStart={handleRecordingStart}
@@ -178,12 +178,12 @@ export default function AskPage() {
 
       {/* Empty State before query */}
       {!hasRun && state === "idle" && (
-        <div className="flex flex-col items-center gap-4 text-center py-8">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+        <div className="flex flex-col items-center gap-4 py-8 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded bg-muted text-muted-foreground">
             <MessageSquare className="h-6 w-6" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-foreground">No active query run</p>
+            <p className="text-sm font-bold text-foreground">[No Active Query]</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Tap the microphone above to speak your question or select a sample paper query
             </p>

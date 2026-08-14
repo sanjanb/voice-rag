@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef } from "react";
 import { Upload, X, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const ACCEPTED_TYPES = [".txt", ".md", ".json", ".jsonl", ".pdf"];
 const ACCEPT_MIME = "text/plain,text/markdown,application/json,text/csv,application/pdf";
@@ -66,7 +65,7 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-8 text-center transition-colors",
+          "flex cursor-pointer flex-col items-center justify-center gap-2 rounded border-2 border-dashed p-8 text-center transition-colors",
           isDragging
             ? "border-primary bg-primary/5"
             : "border-border hover:border-muted-foreground/30"
@@ -74,8 +73,8 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
       >
         <Upload className="h-8 w-8 text-muted-foreground" />
         <div>
-          <p className="text-sm font-medium">Drop files here or click to browse</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="font-mono text-xs font-bold text-foreground">[Drop files here or click to browse]</p>
+          <p className="mt-1 font-mono text-[10px] text-muted-foreground">
             Supports {ACCEPTED_TYPES.join(", ")}
           </p>
         </div>
@@ -95,18 +94,18 @@ export function UploadZone({ onUpload }: UploadZoneProps) {
           {uploads.map((upload, i) => (
             <div
               key={`${upload.file.name}-${i}`}
-              className="flex items-center gap-3 rounded-lg border px-3 py-2"
+              className="flex items-center gap-3 rounded border border-border bg-card px-3 py-2"
             >
               <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <span className="flex-1 truncate text-sm">{upload.file.name}</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="flex-1 truncate font-mono text-xs text-foreground">{upload.file.name}</span>
+              <span className="font-mono text-[10px] text-muted-foreground">
                 {(upload.file.size / 1024).toFixed(1)} KB
               </span>
               <button
                 onClick={() => removeFile(i)}
-                className="rounded p-0.5 hover:bg-muted"
+                className="rounded p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
-                <X className="h-3.5 w-3.5 text-muted-foreground" />
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
           ))}

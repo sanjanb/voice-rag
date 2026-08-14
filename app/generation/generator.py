@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import asyncio
-import httpx
 import json
 import logging
 
 from app.config.settings import settings
 from app.generation.prompts import GENERATION_PROMPT, SYSTEM_PROMPT
 from app.generation.structured import validate_generated_answer
+from app.http_client import get_shared_client
 from app.schemas.generation import GeneratedAnswer, Claim
 
 logger = logging.getLogger(__name__)
@@ -24,6 +24,7 @@ class Generator:
 
     def __init__(self, model: str = "gpt-4o-mini") -> None:
         self.model = model
+        self._client = get_shared_client()
 
     async def generate(self, question: str, context: str, max_retries: int = 2) -> GeneratedAnswer:
         """Generate a grounded answer from evidence."""
@@ -51,17 +52,16 @@ class Generator:
         retries = max_retries
         while True:
             try:
-                async with httpx.AsyncClient(timeout=30.0) as client:
-                    resp = await client.post(
-                        "https://api.openai.com/v1/chat/completions",
-                        headers=headers,
-                        json=payload,
-                    )
-                    resp.raise_for_status()
-                    data = resp.json()
-                    content = data["choices"][0]["message"]["content"]
-                    parsed = json.loads(content)
-                    return validate_generated_answer(parsed)
+                resp = await self._client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+                content = data["choices"][0]["message"]["content"]
+                parsed = json.loads(content)
+                return validate_generated_answer(parsed)
 
             except httpx.HTTPStatusError as exc:
                 logger.warning("OpenAI API error: %s", exc)

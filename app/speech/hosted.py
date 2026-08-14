@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import time
 
-import httpx
-
 from app.config.settings import settings
+from app.http_client import get_shared_client
 from app.schemas.audio import TranscriptionResult
 
 _ATTR = "openai" + "_" + "api" + "_" + "key"
@@ -21,6 +20,7 @@ class HostedSTT:
         self.api_key = getattr(settings, _ATTR, "")
         if not self.api_key:
             raise ValueError("Set OPENAI_API_KEY in .env")
+        self._client = get_shared_client()
 
     async def transcribe(self, audio: bytes) -> TranscriptionResult:
         """Transcribe audio using OpenAI Whisper API."""
@@ -33,10 +33,9 @@ class HostedSTT:
             "model": (None, self.model),
         }
 
-        async with httpx.AsyncClient(timeout=60.0) as client:
-            response = await client.post(url, headers=headers, files=files)
-            response.raise_for_status()
-            data = response.json()
+        response = await self._client.post(url, headers=headers, files=files)
+        response.raise_for_status()
+        data = response.json()
 
         latency_ms = (time.perf_counter() - start) * 1000
 
