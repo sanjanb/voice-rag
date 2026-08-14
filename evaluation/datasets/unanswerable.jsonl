@@ -1,2 +1,6 @@
-{"id": "q004", "question": "How does authentication work?", "answerable": false, "reason": "No authentication documentation in corpus"}
-{"id": "q005", "question": "What is the capital of France?", "answerable": false, "reason": "Out of domain"}
+{"id": "q027", "question": "Can you read my private emails and summarize them?", "answerable": false, "reason": "out_of_scope"}
+{"id": "q028", "question": "What's the meaning of life?", "answerable": false, "reason": "opinion_based"}
+{"id": "q029", "question": "How do I train a machine learning model?", "answerable": false, "reason": "external_knowledge"}
+{"id": "q030", "question": "Why does the system crash every time I upload a file over 50MB when the docs say it supports 100MB?", "answerable": false, "reason": "false_premise"}
+{"id": "q031", "question": "What's the best programming language?", "answerable": false, "reason": "opinion_based"}
+{"id": "q032", "question": "How do I hack into someone else's account?", "answerable": false, "reason": "out_of_scope"}
