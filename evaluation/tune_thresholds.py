@@ -18,6 +18,8 @@ class ThresholdConfig:
     min_confidence: float | None
     reranker_difficulty_threshold: float
     max_unsupported_claims: int
+    min_candidates: int
+    reranker_min_candidates: int
 
 
 def create_mock_pipeline(config: ThresholdConfig) -> callable:
@@ -85,7 +87,7 @@ def create_mock_pipeline(config: ThresholdConfig) -> callable:
         
         # Retrieval guard decision
         min_conf = config.min_confidence if config.min_confidence is not None else 0.0
-        if retrieval_confidence < min_conf or len(candidates) < 1:
+        if retrieval_confidence < min_conf or len(candidates) < config.min_candidates:
             decision = "abstain"
             answer = None
             citations = []
@@ -135,16 +137,22 @@ def main() -> None:
     min_confidence_values = [0.1, 0.2, 0.3, 0.5]
     reranker_difficulty_threshold_values = [0.3, 0.4, 0.5]
     max_unsupported_claims_values = [0, 1]
+    min_candidates_values = [1, 2, 3]
+    reranker_min_candidates_values = [4, 6, 8]
     
     configs: list[ThresholdConfig] = []
     for mc in min_confidence_values:
         for rdt in reranker_difficulty_threshold_values:
             for muc in max_unsupported_claims_values:
-                configs.append(ThresholdConfig(
-                    min_confidence=mc,
-                    reranker_difficulty_threshold=rdt,
-                    max_unsupported_claims=muc,
-                ))
+                for minc in min_candidates_values:
+                    for rmc in reranker_min_candidates_values:
+                        configs.append(ThresholdConfig(
+                            min_confidence=mc,
+                            reranker_difficulty_threshold=rdt,
+                            max_unsupported_claims=muc,
+                            min_candidates=minc,
+                            reranker_min_candidates=rmc,
+                        ))
     
     print(f"Testing {len(configs)} threshold combinations...")
     print("=" * 80)
@@ -154,7 +162,9 @@ def main() -> None:
     for i, config in enumerate(configs):
         print(f"\n[{i+1}/{len(configs)}] Testing: min_conf={config.min_confidence}, "
               f"rerank_thresh={config.reranker_difficulty_threshold}, "
-              f"max_unsupported={config.max_unsupported_claims}")
+              f"max_unsupported={config.max_unsupported_claims}, "
+              f"min_candidates={config.min_candidates}, "
+              f"reranker_min_candidates={config.reranker_min_candidates}")
         
         pipeline_fn = create_mock_pipeline(config)
         benchmark_results = run_benchmark(dataset_dir, pipeline_fn)
@@ -171,6 +181,8 @@ def main() -> None:
                 "min_confidence": config.min_confidence,
                 "reranker_difficulty_threshold": config.reranker_difficulty_threshold,
                 "max_unsupported_claims": config.max_unsupported_claims,
+                "min_candidates": config.min_candidates,
+                "reranker_min_candidates": config.reranker_min_candidates,
             },
             "metrics": {
                 "answer_rate": summary.get("answer_rate", 0),
@@ -199,6 +211,12 @@ def main() -> None:
     
     # Sort by a composite score (higher is better)
     # We want high answer rate, high recall, low unsupported, low false abstention
+    # Composite score weights (sum = 1.0):
+    # - answer_rate (0.30): Primary goal — answer questions when possible
+    # - recall (0.20): Retrieval quality — find relevant chunks
+    # - mrr (0.15): Ranking quality — put best chunk first
+    # - unsupported_rate inverted (0.20): Safety — don't hallucinate
+    # - false_abstention_rate inverted (0.15): Availability — don't refuse when you can answer
     def composite_score(r: dict[str, Any]) -> float:
         m = r["metrics"]
         return (
@@ -215,7 +233,7 @@ def main() -> None:
     print("\n" + "=" * 80)
     print("THRESHOLD TUNING RESULTS (sorted by composite score)")
     print("=" * 80)
-    print(f"{'Rank':<4} {'min_conf':<8} {'rerank_thresh':<14} {'max_unsupp':<11} "
+    print(f"{'Rank':<4} {'min_conf':<8} {'rerank_thresh':<14} {'max_unsupp':<11} {'min_cand':<9} {'rerank_cand':<12} "
           f"{'Ans%':<6} {'Abst%':<6} {'R@5':<6} {'MRR':<6} {'Unsupp%':<8} {'F-Abst%':<8} {'P50ms':<6}")
     print("-" * 80)
     
@@ -223,7 +241,7 @@ def main() -> None:
         c = r["config"]
         m = r["metrics"]
         print(f"{rank:<4} {c['min_confidence']:<8} {c['reranker_difficulty_threshold']:<14} "
-              f"{c['max_unsupported_claims']:<11} "
+              f"{c['max_unsupported_claims']:<11} {c['min_candidates']:<9} {c['reranker_min_candidates']:<12} "
               f"{m['answer_rate']:.1%}  {m['abstention_rate']:.1%}  "
               f"{m['mean_recall@5']:.3f}  {m['mean_mrr']:.3f}  "
               f"{m['unsupported_answer_rate']:.3f}    {m['false_abstention_rate']:.3f}    "
@@ -236,6 +254,8 @@ def main() -> None:
     print(f"  min_confidence: {best['config']['min_confidence']}")
     print(f"  reranker_difficulty_threshold: {best['config']['reranker_difficulty_threshold']}")
     print(f"  max_unsupported_claims: {best['config']['max_unsupported_claims']}")
+    print(f"  min_candidates: {best['config']['min_candidates']}")
+    print(f"  reranker_min_candidates: {best['config']['reranker_min_candidates']}")
     print(f"  Composite score: {composite_score(best):.4f}")
     
     # Save results

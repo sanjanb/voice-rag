@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     final_top_k: int = 5
 
     # Guardrails
-    min_retrieval_confidence: float | None = None
+    min_retrieval_confidence: float = 0.3
     min_candidates: int = 1
     max_unsupported_claims: int = 0
 
