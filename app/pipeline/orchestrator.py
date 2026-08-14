@@ -9,6 +9,7 @@ from typing import Any
 
 from opentelemetry.trace import Status, StatusCode
 
+from app.config.settings import settings
 from app.generation.generator import Generator
 from app.generation.verifier import Verifier
 from app.guardrails.answer_guard import AnswerGuard
@@ -33,10 +34,13 @@ class PipelineOrchestrator:
         self.retrieval_engine = RetrievalEngine()
         self.reranker = CrossEncoderReranker()
         self.context_builder = ContextBuilder()
-        self.retrieval_guard = RetrievalGuard(min_confidence=0.3, min_candidates=1)
+        self.retrieval_guard = RetrievalGuard(
+            min_confidence=settings.min_retrieval_confidence,
+            min_candidates=settings.min_candidates,
+        )
         self.generator = Generator()
         self.verifier = Verifier()
-        self.answer_guard = AnswerGuard()
+        self.answer_guard = AnswerGuard(max_unsupported_claims=settings.max_unsupported_claims)
 
     async def run(self, request: AudioRequest) -> FinalResponse:
         """Execute the full pipeline for an audio request."""
@@ -88,7 +92,7 @@ class PipelineOrchestrator:
                 # Stage 4: Optional reranking
                 rerank_start = time.perf_counter()
                 with tracer.start_as_current_span("reranking", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "reranking"}) as span:
-                    if query_analysis.difficulty_score >= 0.4 and len(candidates) > 5:
+                    if query_analysis.difficulty_score >= settings.reranker_difficulty_threshold and len(candidates) >= settings.reranker_min_candidates:
                         candidates = await self.reranker.rerank(query_text, candidates, top_k=5)
                         span.set_attribute("voice_rag.reranked_count", len(candidates))
                     else:
@@ -224,7 +228,7 @@ class PipelineOrchestrator:
                 # Stage 3: Optional reranking
                 rerank_start = time.perf_counter()
                 with tracer.start_as_current_span("reranking", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "reranking"}) as span:
-                    if query_analysis.difficulty_score >= 0.4 and len(candidates) > 5:
+                    if query_analysis.difficulty_score >= settings.reranker_difficulty_threshold and len(candidates) >= settings.reranker_min_candidates:
                         candidates = await self.reranker.rerank(query, candidates, top_k=5)
                         span.set_attribute("voice_rag.reranked_count", len(candidates))
                     else:

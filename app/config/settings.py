@@ -48,6 +48,10 @@ class Settings(BaseSettings):
     min_candidates: int = 1
     max_unsupported_claims: int = 0
 
+    # Reranker trigger
+    reranker_difficulty_threshold: float = 0.4
+    reranker_min_candidates: int = 6
+
     # Timeouts
     stt_budget_ms: int = 120
     query_budget_ms: int = 10
