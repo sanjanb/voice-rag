@@ -15,7 +15,9 @@ class RetrievedChunk(BaseModel):
     content: str
     metadata: dict[str, Any] = Field(default_factory=dict)
     dense_rank: int | None = None
+    dense_score: float | None = None
     sparse_rank: int | None = None
+    sparse_score: float | None = None
     rrf_score: float | None = None
     rerank_score: float | None = None
 
