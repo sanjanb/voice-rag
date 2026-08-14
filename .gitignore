@@ -49,6 +49,7 @@ data/chunks/*
 
 # OpenCode deepwork state
 .slim/
+.opencode/
 
 # Node & Next.js
 node_modules/

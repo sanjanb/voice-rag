@@ -90,8 +90,8 @@ class PipelineOrchestrator:
                     metrics.query_ms = (time.perf_counter() - query_start) * 1000
                     span.set_attribute("voice_rag.query_ms", metrics.query_ms)
                     span.set_attribute(
-                    "voice_rag.difficulty_score", query_analysis.difficulty_score
-                )
+                        "voice_rag.difficulty_score", query_analysis.difficulty_score
+                    )
 
                 # Stage 3: Retrieval
                 self.stage = PipelineStage.RETRIEVING
@@ -184,9 +184,7 @@ class PipelineOrchestrator:
                     generated = await self.generator.generate(query_text, context)
                     metrics.generation_ms = (time.perf_counter() - generation_start) * 1000
                     span.set_attribute("voice_rag.generation_ms", metrics.generation_ms)
-                    span.set_attribute(
-                        "voice_rag.answer_length", len(generated.answer or "")
-                    )
+                    span.set_attribute("voice_rag.answer_length", len(generated.answer or ""))
 
                 # Stage 8: Verification
                 verify_start = time.perf_counter()
@@ -264,7 +262,7 @@ class PipelineOrchestrator:
 
         with tracer.start_as_current_span("pipeline.run", attributes=root_attrs) as root_span:
             try:
-# Stage 1: Query analysis
+                # Stage 1: Query analysis
                 self.stage = PipelineStage.QUERY_READY
                 query_start = time.perf_counter()
                 with tracer.start_as_current_span(
@@ -372,9 +370,7 @@ class PipelineOrchestrator:
                     generated = await self.generator.generate(query, context)
                     metrics.generation_ms = (time.perf_counter() - generation_start) * 1000
                     span.set_attribute("voice_rag.generation_ms", metrics.generation_ms)
-                    span.set_attribute(
-                        "voice_rag.answer_length", len(generated.answer or "")
-                    )
+                    span.set_attribute("voice_rag.answer_length", len(generated.answer or ""))
 
                 # Stage 7: Verification
                 verify_start = time.perf_counter()

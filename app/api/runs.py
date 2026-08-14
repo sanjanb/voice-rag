@@ -113,12 +113,12 @@ MOCK_RUNS: list[PipelineRun] = [
         guardrailMs=4,
         generationMs=78,
         answer=(
-    "The study identifies three major conclusions. First, concurrent dense and "
-    "sparse retrieval reduces pipeline latency significantly. Second, Reciprocal "
-    "Rank Fusion (RRF) preserves top-tier candidate quality across heterogeneous "
-    "documents. Finally, adaptive reranking achieves high precision while saving "
-    "~31ms when retrieval confidence is high."
-),
+            "The study identifies three major conclusions. First, concurrent dense and "
+            "sparse retrieval reduces pipeline latency significantly. Second, Reciprocal "
+            "Rank Fusion (RRF) preserves top-tier candidate quality across heterogeneous "
+            "documents. Finally, adaptive reranking achieves high precision while saving "
+            "~31ms when retrieval confidence is high."
+        ),
         citations=[
             Citation(
                 id=1,
@@ -173,8 +173,7 @@ MOCK_RUNS: list[PipelineRun] = [
                 chunkId="chunk_042",
                 documentName="research-paper.pdf",
                 content=(
-                    "The study investigates empirical latency bounds across hybrid "
-                    "retrieval..."
+                    "The study investigates empirical latency bounds across hybrid retrieval..."
                 ),
                 denseScore=0.94,
                 denseRank=1,
@@ -217,10 +216,10 @@ MOCK_RUNS: list[PipelineRun] = [
         guardrailMs=3,
         generationMs=66,
         answer=(
-    "Section 2 employs structure-aware markdown chunking. Document headings "
-    "(H1-H6) demarcate primary sections, ensuring semantic coherence within "
-    "each chunk."
-),
+            "Section 2 employs structure-aware markdown chunking. Document headings "
+            "(H1-H6) demarcate primary sections, ensuring semantic coherence within "
+            "each chunk."
+        ),
         citations=[
             Citation(
                 id=1,
@@ -288,9 +287,9 @@ MOCK_RUNS: list[PipelineRun] = [
             answerability="LOW",
             decision="ABSTAIN",
             reason=(
-    "I found related information, but the available evidence is not strong "
-    "enough to answer this question confidently."
-),
+                "I found related information, but the available evidence is not strong "
+                "enough to answer this question confidently."
+            ),
         ),
         candidates=[],
     ),

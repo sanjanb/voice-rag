@@ -42,7 +42,7 @@ class Verifier:
             ]
 
         claims_text = "\n".join(
-            f"{i+1}. {c.claim_id}: {c.text}" for i, c in enumerate(answer.claims)
+            f"{i + 1}. {c.claim_id}: {c.text}" for i, c in enumerate(answer.claims)
         )
         prompt = (
             "You are a fact-checking assistant. For each claim, determine if it is "

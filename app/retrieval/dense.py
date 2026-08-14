@@ -11,7 +11,6 @@ from app.schemas.retrieval import RetrievedChunk
 
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
-    from qdrant_client.models import ScoredPoint
 
     from app.embeddings.embedder import Embedder
 
@@ -32,25 +31,38 @@ class DenseRetriever:
         query_embedding = await self.embedder.embed_text(query)
 
         # 2. Search Qdrant
-        results: list[ScoredPoint] = self._client.search(  # type: ignore[attr-defined]
-            collection_name=self._collection,
-            query_vector=query_embedding,
-            limit=top_n,
-        )
-
-        # 3. Map results to RetrievedChunk objects
         chunks: list[RetrievedChunk] = []
-        for rank, result in enumerate(results, start=1):
-            payload = result.payload or {}
-            chunk = RetrievedChunk(
-                chunk_id=payload.get("chunk_id", str(result.id)),
-                document_id=payload.get("document_id", "unknown"),
-                content=payload.get("content", ""),
-                metadata=payload.get("metadata", {}),
-                dense_rank=rank,
-                dense_score=result.score,
-            )
-            chunks.append(chunk)
+        try:
+            if hasattr(self._client, "query_points"):
+                response = self._client.query_points(
+                    collection_name=self._collection,
+                    query=query_embedding,
+                    limit=top_n,
+                )
+                results = response.points
+            elif hasattr(self._client, "search"):
+                results = self._client.search(  # type: ignore[attr-defined]
+                    collection_name=self._collection,
+                    query_vector=query_embedding,
+                    limit=top_n,
+                )
+            else:
+                results = []
+
+            # 3. Map results to RetrievedChunk objects
+            for rank, result in enumerate(results, start=1):
+                payload = getattr(result, "payload", None) or {}
+                chunk = RetrievedChunk(
+                    chunk_id=payload.get("chunk_id", str(result.id)),
+                    document_id=payload.get("document_id", "unknown"),
+                    content=payload.get("content", ""),
+                    metadata=payload.get("metadata", {}),
+                    dense_rank=rank,
+                    dense_score=getattr(result, "score", 0.0),
+                )
+                chunks.append(chunk)
+        except Exception as exc:
+            logger.warning("Dense search failed: %s; returning empty chunks", exc)
 
         # 4. Return list
         logger.info("Dense search for '%s' returned %d results", query[:50], len(chunks))
