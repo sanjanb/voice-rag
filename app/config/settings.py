@@ -10,6 +10,9 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
+    # API Keys
+    openai_api_key: str = ""
+
     # STT
     stt_primary: str = "hosted"
     stt_fallback: str = "local"
