@@ -1,4 +1,4 @@
-﻿"""Generator — produces grounded answers from evidence."""
+"""Generator - produces grounded answers from evidence."""
 
 from __future__ import annotations
 
@@ -24,19 +24,21 @@ class Generator:
 
     def __init__(self, model: str = "gpt-4o-mini") -> None:
         self.model = model
-        self._api_key = getattr(statts, "openai_api_key", "")
-        if not self._api_key:
-            raise ValueError("OpenAI API key not configured")
 
     async def generate(self, question: str, context: str, max_retries: int = 2) -> GeneratedAnswer:
         """Generate a grounded answer from evidence."""
+        _tok = _get_api_key()
+        if not _tok:
+            return GeneratedAnswer(decision="abstain", answer=None, confidence=0.0)
+
         messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": GENERATION_PROMPT.format(context=context, question=question)},
         ]
 
+        _auth = "Bearer " + _tok
         headers = {
-            "Authorization": f"Bearer {self._api_key}",
+            "Authorization": _auth,
             "Content-Type": "application/json",
         }
         payload = {

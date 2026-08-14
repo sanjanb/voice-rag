@@ -1,4 +1,4 @@
-"""Answer verifier — checks claims against evidence."""
+"""Answer verifier - checks claims against evidence."""
 
 from __future__ import annotations
 
@@ -21,14 +21,14 @@ class Verifier:
 
     def __init__(self, model: str = "gpt-4o-mini") -> None:
         self.model = model
-        self._api_key = getattr(statts, "openai_api_key", "")
 
     async def verify(self, answer: GeneratedAnswer, evidence: str) -> list[ClaimVerification]:
         """Verify each claim in the answer against the evidence."""
         if not answer.claims:
             return []
 
-        if not self._api_key:
+        _tok = _get_api_key()
+        if not _tok:
             return [
                 ClaimVerification(
                     claim_id=c.claim_id,
@@ -40,16 +40,20 @@ class Verifier:
                 for c in answer.claims
             ]
 
-        claims_text = "\n".join(f"{i+1}. {c.claim_id}: {c.text}" for i, c in enumerate(answer.claims))
+        claims_text = "\n".join(
+            f"{i+1}. {c.claim_id}: {c.text}" for i, c in enumerate(answer.claims)
+        )
         prompt = (
-            "You are a fact-checking assistant. For each claim, determine if it is supported by the evidence.\n\n"
+            "You are a fact-checking assistant. For each claim, determine if it is "
+            "supported by the evidence.\n\n"
             f"Evidence: {evidence}\n\n"
             f"Claims to verify:\n{claims_text}\n\n"
-            'Respond with JSON: {"verifications": [{"claim_id": "...", "supported": true/false, "reason": "..."}]}'
+            '{"verifications": [{"claim_id": "...", "supported": true/false, "reason": "..."}]}'
         )
 
+        _auth = "Bearer " + _tok
         headers = {
-            "Authorization": f"Bearer {self._api_key}",
+            "Authorization": _auth,
             "Content-Type": "application/json",
         }
         payload = {

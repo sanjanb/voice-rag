@@ -30,11 +30,11 @@ class CrossEncoderReranker:
         self._model: object | None = None
 
     def _load_model(self) -> object:
-        """Lazy-load the sentence-transformers model."""
+        """Lazy-load the cross-encoder model."""
         if self._model is None:
-            from sentence_transformers import SentenceTransformer
+            from sentence_transformers import CrossEncoder
 
-            self._model = SentenceTransformer(self.model_name)
+            self._model = CrossEncoder(self.model_name)
         return self._model
 
     def _predict_sync(self, pairs: list[tuple[str, str]]) -> list[float]:

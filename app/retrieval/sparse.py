@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 class SparseRetriever:
     """BM25 sparse retrieval."""
 
-    def __init__(self, corpus: list[dict[str, Any]] | None = None) -> None:
-        self.corpus: list[dict[str, Any]] = corpus or []
+    def __init__(self, corpus=None) -> None:
+        self.corpus = corpus or []
         self._bm25: BM25Okapi | None = None
         self._tokenized_corpus: list[list[str]] = []
         if self.corpus:
@@ -26,10 +26,26 @@ class SparseRetriever:
         """Simple tokenization: lowercase + split on whitespace."""
         return text.lower().split()
 
-    def build_index(self, chunks: list[dict[str, Any]]) -> None:
+    def _get_text(self, chunk) -> str:
+        """Extract text from a Chunk object or dict."""
+        if hasattr(chunk, "content"):
+            return chunk.content or ""
+        if isinstance(chunk, dict):
+            return chunk.get("content") or chunk.get("text", "")
+        return ""
+
+    def _get_attr(self, chunk, attr: str, default=None):
+        """Get an attribute from a Chunk object or dict."""
+        if hasattr(chunk, attr):
+            return getattr(chunk, attr, default)
+        if isinstance(chunk, dict):
+            return chunk.get(attr, default)
+        return default
+
+    def build_index(self, chunks) -> None:
         """Tokenize texts and build BM25Okapi index."""
         self.corpus = chunks
-        self._tokenized_corpus = [self._tokenize(chunk.get("content") or chunk.get("text", "")) for chunk in chunks]
+        self._tokenized_corpus = [self._tokenize(self._get_text(c)) for c in chunks]
         self._bm25 = BM25Okapi(self._tokenized_corpus)
         logger.info("Built BM25 index with %d documents", len(chunks))
 
@@ -48,10 +64,10 @@ class SparseRetriever:
             chunk = self.corpus[idx]
             results.append(
                 RetrievedChunk(
-                    chunk_id=chunk.get("chunk_id", f"chunk_{idx}"),
-                    document_id=chunk.get("document_id", "unknown"),
-                    content=chunk.get("content") or chunk.get("text", ""),
-                    metadata=chunk.get("metadata", {}),
+                    chunk_id=self._get_attr(chunk, "chunk_id", f"chunk_{idx}"),
+                    document_id=self._get_attr(chunk, "document_id", "unknown"),
+                    content=self._get_text(chunk),
+                    metadata=self._get_attr(chunk, "metadata", {}),
                     sparse_rank=rank,
                     sparse_score=float(scores[idx]),
                 )
