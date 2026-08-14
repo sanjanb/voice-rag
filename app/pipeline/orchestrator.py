@@ -7,6 +7,8 @@ import time
 import uuid
 from typing import Any
 
+from opentelemetry.trace import Status, StatusCode
+
 from app.generation.generator import Generator
 from app.generation.verifier import Verifier
 from app.guardrails.answer_guard import AnswerGuard
@@ -173,6 +175,7 @@ class PipelineOrchestrator:
                 logger.exception("Pipeline failed for request %s", request_id)
                 root_span.set_attribute("voice_rag.decision", "error")
                 root_span.record_exception(exc)
+                root_span.set_status(Status(StatusCode.ERROR))
 
             metrics.total_ms = (time.perf_counter() - start) * 1000
             root_span.set_attribute("voice_rag.total_ms", metrics.total_ms)
@@ -308,6 +311,7 @@ class PipelineOrchestrator:
                 logger.exception("Pipeline failed for request %s", request_id)
                 root_span.set_attribute("voice_rag.decision", "error")
                 root_span.record_exception(exc)
+                root_span.set_status(Status(StatusCode.ERROR))
 
             metrics.total_ms = (time.perf_counter() - start) * 1000
             root_span.set_attribute("voice_rag.total_ms", metrics.total_ms)

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
+from opentelemetry import trace, metrics as otel_metrics
 
 from app.api.routes import router
 from app.config.settings import settings
@@ -29,5 +30,6 @@ async def startup() -> None:
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
-    """Cleanup on shutdown."""
-    pass
+    """Cleanup on shutdown — flush OTel buffers."""
+    trace.get_tracer_provider().shutdown()
+    otel_metrics.get_meter_provider().shutdown()
