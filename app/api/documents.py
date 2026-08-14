@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, Any
 
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -31,28 +31,28 @@ class Document(BaseModel):
     size: int
     pages: int | None = None
     characters: int | None = None
-    embeddingsCount: int | None = None
+    embeddingsCount: int | None = None  # noqa: N815
     parser: str | None = None
-    chunkingStrategy: str | None = None
-    chunkSize: int | None = None
+    chunkingStrategy: str | None = None  # noqa: N815
+    chunkSize: int | None = None  # noqa: N815
     overlap: int | None = None
-    sparseIndex: str | None = None
-    denseIndex: str | None = None
-    metadata: dict = Field(default_factory=dict)
+    sparseIndex: str | None = None  # noqa: N815
+    denseIndex: str | None = None  # noqa: N815
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class Chunk(BaseModel):
     """Chunk model matching frontend types."""
 
     id: str
-    documentId: str
-    documentName: str | None = None
+    documentId: str  # noqa: N815
+    documentName: str | None = None  # noqa: N815
     content: str
-    tokenCount: int
+    tokenCount: int  # noqa: N815
     strategy: str
-    headingPath: list[str] = Field(default_factory=list)
-    pageNumber: int | None = None
-    metadata: dict = Field(default_factory=dict)
+    headingPath: list[str] = Field(default_factory=list)  # noqa: N815
+    pageNumber: int | None = None  # noqa: N815
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 # Mock data from frontend/lib/api.ts
@@ -140,7 +140,11 @@ MOCK_CHUNKS: list[Chunk] = [
         id="chunk_042",
         documentId="doc-001",
         documentName="research-paper.pdf",
-        content="The study investigates empirical latency bounds across hybrid retrieval architectures. Dense and sparse indexing are executed concurrently to minimize total retrieval overhead.",
+        content=(
+            "The study investigates empirical latency bounds across hybrid retrieval "
+            "architectures. Dense and sparse indexing are executed concurrently to "
+            "minimize total retrieval overhead."
+        ),
         tokenCount=142,
         strategy="structural",
         headingPath=["Abstract", "System Overview"],
@@ -151,7 +155,11 @@ MOCK_CHUNKS: list[Chunk] = [
         id="chunk_018",
         documentId="doc-001",
         documentName="research-paper.pdf",
-        content="Previous research demonstrates that Reciprocal Rank Fusion (RRF) with parameter k=60 achieves optimal trade-offs between precision and latency across multi-domain datasets.",
+        content=(
+            "Previous research demonstrates that Reciprocal Rank Fusion (RRF) with "
+            "parameter k=60 achieves optimal trade-offs between precision and latency "
+            "across multi-domain datasets."
+        ),
         tokenCount=168,
         strategy="structural",
         headingPath=["Methodology", "Rank Fusion"],
@@ -162,7 +170,11 @@ MOCK_CHUNKS: list[Chunk] = [
         id="chunk_012",
         documentId="doc-001",
         documentName="research-paper.pdf",
-        content="Experimental results confirm that adaptive cross-encoder reranking eliminates false positive context passages while saving ~31ms when retrieval confidence exceeds 0.85.",
+        content=(
+            "Experimental results confirm that adaptive cross-encoder reranking "
+            "eliminates false positive context passages while saving ~31ms when "
+            "retrieval confidence exceeds 0.85."
+        ),
         tokenCount=155,
         strategy="structural",
         headingPath=["Results", "Reranker Ablation"],

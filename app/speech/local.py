@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import tempfile
 import time
@@ -36,10 +37,8 @@ class LocalSTT:
             text = result.get("text", "").strip()
             language = result.get("language")
         finally:
-            try:
+            with contextlib.suppress(OSError):
                 os.unlink(tmp_path)
-            except OSError:
-                pass
 
         latency_ms = (time.perf_counter() - start) * 1000
 

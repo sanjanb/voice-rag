@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
-from opentelemetry import trace, metrics as otel_metrics
+from opentelemetry import metrics as otel_metrics
+from opentelemetry import trace
 
 from app.api.routes import router
 from app.config.settings import settings
 from app.observability.logging import setup_logging
-from app.observability.tracing import setup_tracing
 from app.observability.metrics import setup_metrics
+from app.observability.tracing import setup_tracing
 
 app = FastAPI(
     title="VoiceRAG",
@@ -36,5 +37,5 @@ async def shutdown() -> None:
 
     await close_http()
     close_qdrant()
-    trace.get_tracer_provider().shutdown()
-    otel_metrics.get_meter_provider().shutdown()
+    trace.get_tracer_provider().shutdown()  # type: ignore[attr-defined]
+    otel_metrics.get_meter_provider().shutdown()  # type: ignore[attr-defined]

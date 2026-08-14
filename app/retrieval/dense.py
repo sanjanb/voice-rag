@@ -5,13 +5,15 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
-from qdrant_client import QdrantClient
+from app.config.settings import settings
 from app.qdrant_client import get_shared_client
-from app.embeddings.embedder import Embedder
 from app.schemas.retrieval import RetrievedChunk
 
 if TYPE_CHECKING:
+    from qdrant_client import QdrantClient
     from qdrant_client.models import ScoredPoint
+
+    from app.embeddings.embedder import Embedder
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +32,7 @@ class DenseRetriever:
         query_embedding = await self.embedder.embed_text(query)
 
         # 2. Search Qdrant
-        results: list[ScoredPoint] = self._client.search(
+        results: list[ScoredPoint] = self._client.search(  # type: ignore[attr-defined]
             collection_name=self._collection,
             query_vector=query_embedding,
             limit=top_n,

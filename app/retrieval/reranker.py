@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
     from app.schemas.retrieval import RetrievedChunk
@@ -27,9 +27,9 @@ class CrossEncoderReranker:
 
     def __init__(self, model_name: str | None = None) -> None:
         self.model_name = model_name or settings.reranker_model
-        self._model: object | None = None
+        self._model: Any | None = None
 
-    def _load_model(self) -> object:
+    def _load_model(self) -> Any:
         """Lazy-load the cross-encoder model."""
         if self._model is None:
             from sentence_transformers import CrossEncoder
@@ -40,7 +40,7 @@ class CrossEncoderReranker:
     def _predict_sync(self, pairs: list[tuple[str, str]]) -> list[float]:
         """Synchronous prediction for use in executor."""
         model = self._load_model()
-        return model.predict(pairs).tolist()
+        return model.predict(pairs).tolist()  # type: ignore[no-any-return]
 
     async def rerank(
         self, query: str, candidates: list[RetrievedChunk], top_k: int = 5
@@ -55,7 +55,7 @@ class CrossEncoderReranker:
             loop = asyncio.get_event_loop()
             scores = await loop.run_in_executor(None, self._predict_sync, pairs)
 
-            for chunk, score in zip(candidates, scores):
+            for chunk, score in zip(candidates, scores, strict=False):
                 chunk.rerank_score = float(score)
 
             candidates.sort(key=lambda c: c.rerank_score or 0.0, reverse=True)

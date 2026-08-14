@@ -6,14 +6,15 @@ import logging
 import uuid
 from typing import TYPE_CHECKING
 
-from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
 from app.config.settings import settings
-from app.embeddings.embedder import Embedder
 from app.qdrant_client import get_shared_client
 
 if TYPE_CHECKING:
+    from qdrant_client import QdrantClient
+
+    from app.embeddings.embedder import Embedder
     from app.ingestion.chunking.base import Chunk
 
 logger = logging.getLogger(__name__)
@@ -34,7 +35,9 @@ class Indexer:
         if self._collection not in names:
             self._client.create_collection(
                 collection_name=self._collection,
-                vectors_config=VectorParams(size=settings.embedding_dimensions, distance=Distance.COSINE),
+                vectors_config=VectorParams(
+                    size=settings.embedding_dimensions, distance=Distance.COSINE
+                ),
             )
             logger.info("Created Qdrant collection '%s'", self._collection)
 

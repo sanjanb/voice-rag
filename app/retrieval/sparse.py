@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class SparseRetriever:
     """BM25 sparse retrieval."""
 
-    def __init__(self, corpus=None) -> None:
+    def __init__(self, corpus: list[Any] | None = None) -> None:
         self.corpus = corpus or []
         self._bm25: BM25Okapi | None = None
         self._tokenized_corpus: list[list[str]] = []
@@ -26,15 +26,21 @@ class SparseRetriever:
         """Simple tokenization: lowercase + split on whitespace."""
         return text.lower().split()
 
-    def _get_text(self, chunk) -> str:
+    def _get_text(self, chunk: Any) -> str:
         """Extract text from a Chunk object or dict."""
         if hasattr(chunk, "content"):
             return chunk.content or ""
         if isinstance(chunk, dict):
-            return chunk.get("content") or chunk.get("text", "")
+            content = chunk.get("content")
+            if content is not None:
+                return str(content)
+            text = chunk.get("text")
+            if text is not None:
+                return str(text)
+            return ""
         return ""
 
-    def _get_attr(self, chunk, attr: str, default=None):
+    def _get_attr(self, chunk: Any, attr: str, default: Any = None) -> Any:
         """Get an attribute from a Chunk object or dict."""
         if hasattr(chunk, attr):
             return getattr(chunk, attr, default)
@@ -42,7 +48,7 @@ class SparseRetriever:
             return chunk.get(attr, default)
         return default
 
-    def build_index(self, chunks) -> None:
+    def build_index(self, chunks: list[Any]) -> None:
         """Tokenize texts and build BM25Okapi index."""
         self.corpus = chunks
         self._tokenized_corpus = [self._tokenize(self._get_text(c)) for c in chunks]

@@ -60,7 +60,13 @@ class Verifier:
         payload = {
             "model": self.model,
             "messages": [
-                {"role": "system", "content": "You are a fact-checking assistant. For each claim, determine if it is supported by the evidence."},
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a fact-checking assistant. For each claim, determine "
+                        "if it is supported by the evidence."
+                    ),
+                },
                 {"role": "user", "content": prompt},
             ],
             "temperature": 0.0,

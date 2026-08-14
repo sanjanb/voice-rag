@@ -66,6 +66,7 @@ class Settings(BaseSettings):
 
     # Observability
     otel_exporter_otlp_endpoint: str = "http://localhost:4317"
+    otel_service_name: str = "voice-rag"
     log_level: str = "INFO"
 
 

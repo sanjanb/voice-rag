@@ -6,11 +6,13 @@ import asyncio
 import json
 import logging
 
+import httpx
+
 from app.config.settings import settings
 from app.generation.prompts import GENERATION_PROMPT, SYSTEM_PROMPT
 from app.generation.structured import validate_generated_answer
 from app.http_client import get_shared_client
-from app.schemas.generation import GeneratedAnswer, Claim
+from app.schemas.generation import GeneratedAnswer
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,10 @@ class Generator:
 
         messages = [
             {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": GENERATION_PROMPT.format(context=context, question=question)},
+            {
+                "role": "user",
+                "content": GENERATION_PROMPT.format(context=context, question=question),
+            },
         ]
 
         _auth = "Bearer " + _tok

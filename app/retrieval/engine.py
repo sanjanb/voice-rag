@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 
+from app.embeddings.embedder import Embedder
 from app.retrieval.dense import DenseRetriever
 from app.retrieval.rrf import reciprocal_rank_fusion
 from app.retrieval.sparse import SparseRetriever
@@ -19,8 +20,9 @@ class RetrievalEngine:
         self,
         dense: DenseRetriever | None = None,
         sparse: SparseRetriever | None = None,
+        embedder: Embedder | None = None,
     ) -> None:
-        self.dense = dense or DenseRetriever()
+        self.dense = dense or DenseRetriever(embedder=embedder or Embedder())
         self.sparse = sparse or SparseRetriever()
 
     async def retrieve(

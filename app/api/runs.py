@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Annotated
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
@@ -14,9 +12,9 @@ class Citation(BaseModel):
     """Citation model matching frontend types."""
 
     id: int
-    chunkId: str
-    documentName: str
-    pageNumber: int
+    chunkId: str  # noqa: N815
+    documentName: str  # noqa: N815
+    pageNumber: int  # noqa: N815
     score: float
     snippet: str
 
@@ -25,10 +23,10 @@ class STTDetails(BaseModel):
     """STT details model."""
 
     provider: str
-    latencyMs: int
+    latencyMs: int  # noqa: N815
     confidence: float
-    fallbackUsed: bool
-    fallbackReason: str | None = None
+    fallbackUsed: bool  # noqa: N815
+    fallbackReason: str | None = None  # noqa: N815
 
 
 class RerankerDecision(BaseModel):
@@ -36,22 +34,22 @@ class RerankerDecision(BaseModel):
 
     status: str  # "ENABLED" | "SKIPPED"
     reason: str
-    queryComplexity: str  # "LOW" | "MEDIUM" | "HIGH"
-    denseSparseAgreement: float
-    topScoreMargin: float
-    evidenceConfidence: float
-    candidatesBefore: int
-    candidatesAfter: int
-    latencyMs: int
+    queryComplexity: str  # noqa: N815
+    denseSparseAgreement: float  # noqa: N815
+    topScoreMargin: float  # noqa: N815
+    evidenceConfidence: float  # noqa: N815
+    candidatesBefore: int  # noqa: N815
+    candidatesAfter: int  # noqa: N815
+    latencyMs: int  # noqa: N815
 
 
 class GuardrailDecision(BaseModel):
     """Guardrail decision model."""
 
     status: str  # "PASS" | "ABSTAIN"
-    evidenceCoverage: float
-    retrievalConfidence: float
-    contradictionScore: float
+    evidenceCoverage: float  # noqa: N815
+    retrievalConfidence: float  # noqa: N815
+    contradictionScore: float  # noqa: N815
     answerability: str  # "HIGH" | "MEDIUM" | "LOW"
     decision: str  # "ANSWER" | "ABSTAIN"
     reason: str | None = None
@@ -60,42 +58,42 @@ class GuardrailDecision(BaseModel):
 class RetrievalCandidate(BaseModel):
     """Retrieval candidate model."""
 
-    chunkId: str
-    documentName: str
+    chunkId: str  # noqa: N815
+    documentName: str  # noqa: N815
     content: str
-    denseScore: float | None = None
-    denseRank: int | None = None
-    sparseScore: float | None = None
-    sparseRank: int | None = None
-    rrfScore: float | None = None
-    rrfRank: int | None = None
-    rerankScore: float | None = None
-    rerankRank: int | None = None
-    pageNumber: int | None = None
+    denseScore: float | None = None  # noqa: N815
+    denseRank: int | None = None  # noqa: N815
+    sparseScore: float | None = None  # noqa: N815
+    sparseRank: int | None = None  # noqa: N815
+    rrfScore: float | None = None  # noqa: N815
+    rrfRank: int | None = None  # noqa: N815
+    rerankScore: float | None = None  # noqa: N815
+    rerankRank: int | None = None  # noqa: N815
+    pageNumber: int | None = None  # noqa: N815
 
 
 class PipelineRun(BaseModel):
     """Pipeline run model matching frontend types."""
 
-    runId: str
+    runId: str  # noqa: N815
     query: str
     status: str  # "Complete" | "Abstained" | "Failed"
     timestamp: str
-    totalLatencyMs: int
-    sttMs: int
-    queryMs: int
-    bm25Ms: int
-    denseMs: int
-    rrfMs: int
-    rerankerMs: int
-    guardrailMs: int
-    generationMs: int
+    totalLatencyMs: int  # noqa: N815
+    sttMs: int  # noqa: N815
+    queryMs: int  # noqa: N815
+    bm25Ms: int  # noqa: N815
+    denseMs: int  # noqa: N815
+    rrfMs: int  # noqa: N815
+    rerankerMs: int  # noqa: N815
+    guardrailMs: int  # noqa: N815
+    generationMs: int  # noqa: N815
     answer: str | None = None
     citations: list[Citation] = Field(default_factory=list)
-    rerankerDecision: RerankerDecision | None = None
-    guardrailDecision: GuardrailDecision | None = None
+    rerankerDecision: RerankerDecision | None = None  # noqa: N815
+    guardrailDecision: GuardrailDecision | None = None  # noqa: N815
     candidates: list[RetrievalCandidate] = Field(default_factory=list)
-    sttDetails: STTDetails | None = None
+    sttDetails: STTDetails | None = None  # noqa: N815
 
 
 # Mock data from frontend/lib/api.ts
@@ -114,7 +112,13 @@ MOCK_RUNS: list[PipelineRun] = [
         rerankerMs=31,
         guardrailMs=4,
         generationMs=78,
-        answer="The study identifies three major conclusions. First, concurrent dense and sparse retrieval reduces pipeline latency significantly. Second, Reciprocal Rank Fusion (RRF) preserves top-tier candidate quality across heterogeneous documents. Finally, adaptive reranking achieves high precision while saving ~31ms when retrieval confidence is high.",
+        answer=(
+    "The study identifies three major conclusions. First, concurrent dense and "
+    "sparse retrieval reduces pipeline latency significantly. Second, Reciprocal "
+    "Rank Fusion (RRF) preserves top-tier candidate quality across heterogeneous "
+    "documents. Finally, adaptive reranking achieves high precision while saving "
+    "~31ms when retrieval confidence is high."
+),
         citations=[
             Citation(
                 id=1,
@@ -122,7 +126,10 @@ MOCK_RUNS: list[PipelineRun] = [
                 documentName="research-paper.pdf",
                 pageNumber=12,
                 score=0.94,
-                snippet="The study investigates empirical latency bounds across hybrid retrieval architectures...",
+                snippet=(
+                    "The study investigates empirical latency bounds across hybrid "
+                    "retrieval architectures..."
+                ),
             ),
             Citation(
                 id=2,
@@ -130,7 +137,10 @@ MOCK_RUNS: list[PipelineRun] = [
                 documentName="research-paper.pdf",
                 pageNumber=13,
                 score=0.89,
-                snippet="Previous research demonstrates that Reciprocal Rank Fusion (RRF) with parameter k=60...",
+                snippet=(
+                    "Previous research demonstrates that Reciprocal Rank Fusion (RRF) "
+                    "with parameter k=60..."
+                ),
             ),
         ],
         sttDetails=STTDetails(
@@ -162,7 +172,10 @@ MOCK_RUNS: list[PipelineRun] = [
             RetrievalCandidate(
                 chunkId="chunk_042",
                 documentName="research-paper.pdf",
-                content="The study investigates empirical latency bounds across hybrid retrieval...",
+                content=(
+                    "The study investigates empirical latency bounds across hybrid "
+                    "retrieval..."
+                ),
                 denseScore=0.94,
                 denseRank=1,
                 sparseScore=0.87,
@@ -203,7 +216,11 @@ MOCK_RUNS: list[PipelineRun] = [
         rerankerMs=0,
         guardrailMs=3,
         generationMs=66,
-        answer="Section 2 employs structure-aware markdown chunking. Document headings (H1-H6) demarcate primary sections, ensuring semantic coherence within each chunk.",
+        answer=(
+    "Section 2 employs structure-aware markdown chunking. Document headings "
+    "(H1-H6) demarcate primary sections, ensuring semantic coherence within "
+    "each chunk."
+),
         citations=[
             Citation(
                 id=1,
@@ -270,7 +287,10 @@ MOCK_RUNS: list[PipelineRun] = [
             contradictionScore=0.45,
             answerability="LOW",
             decision="ABSTAIN",
-            reason="I found related information, but the available evidence is not strong enough to answer this question confidently.",
+            reason=(
+    "I found related information, but the available evidence is not strong "
+    "enough to answer this question confidently."
+),
         ),
         candidates=[],
     ),

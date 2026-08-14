@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from typing import Any
 
 from app.config.settings import settings
 from app.http_client import get_shared_client
@@ -28,7 +29,7 @@ class HostedSTT:
 
         url = "https://api.openai.com/v1/audio/transcriptions"
         headers = {"Authorization": f"Bearer {self.api_key}"}
-        files = {
+        files: dict[str, Any] = {
             "file": ("audio.wav", audio, "audio/wav"),
             "model": (None, self.model),
         }

@@ -10,18 +10,18 @@ from typing import Any
 from opentelemetry.trace import Status, StatusCode
 
 from app.config.settings import settings
+from app.context.builder import ContextBuilder
 from app.generation.generator import Generator
 from app.generation.verifier import Verifier
 from app.guardrails.answer_guard import AnswerGuard
 from app.guardrails.retrieval_guard import RetrievalGuard
-from app.context.builder import ContextBuilder
+from app.observability.tracing import get_tracer, span_attributes_from_query
 from app.pipeline.state import PipelineStage
 from app.query.classify import classify_difficulty
 from app.retrieval.engine import RetrievalEngine
 from app.retrieval.reranker import CrossEncoderReranker
 from app.schemas.audio import AudioRequest, TranscriptionResult
 from app.schemas.response import FinalResponse, LatencyMetrics
-from app.observability.tracing import get_tracer, span_attributes_from_query
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +58,13 @@ class PipelineOrchestrator:
                 # Stage 1: STT
                 self.stage = PipelineStage.TRANSCRIBING
                 stt_start = time.perf_counter()
-                with tracer.start_as_current_span("stt", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "stt"}) as span:
+                with tracer.start_as_current_span(
+                    "stt",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "stt",
+                    },
+                ) as span:
                     transcription = TranscriptionResult(
                         text=request.audio_reference or "",
                         provider="placeholder",
@@ -72,17 +78,31 @@ class PipelineOrchestrator:
                 # Stage 2: Query analysis
                 self.stage = PipelineStage.QUERY_READY
                 query_start = time.perf_counter()
-                with tracer.start_as_current_span("query_analysis", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "query_analysis"}) as span:
+                with tracer.start_as_current_span(
+                    "query_analysis",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "query_analysis",
+                    },
+                ) as span:
                     query_text = transcription.text
                     query_analysis = classify_difficulty(query_text)
                     metrics.query_ms = (time.perf_counter() - query_start) * 1000
                     span.set_attribute("voice_rag.query_ms", metrics.query_ms)
-                    span.set_attribute("voice_rag.difficulty_score", query_analysis.difficulty_score)
+                    span.set_attribute(
+                    "voice_rag.difficulty_score", query_analysis.difficulty_score
+                )
 
                 # Stage 3: Retrieval
                 self.stage = PipelineStage.RETRIEVING
                 retrieval_start = time.perf_counter()
-                with tracer.start_as_current_span("retrieval", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "retrieval"}) as span:
+                with tracer.start_as_current_span(
+                    "retrieval",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "retrieval",
+                    },
+                ) as span:
                     retrieval_result = await self.retrieval_engine.retrieve(query_text)
                     candidates = retrieval_result.candidates
                     metrics.dense_retrieval_ms = (time.perf_counter() - retrieval_start) * 1000
@@ -91,18 +111,36 @@ class PipelineOrchestrator:
 
                 # Stage 4: Optional reranking
                 rerank_start = time.perf_counter()
-                with tracer.start_as_current_span("reranking", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "reranking"}) as span:
-                    if query_analysis.difficulty_score >= settings.reranker_difficulty_threshold and len(candidates) >= settings.reranker_min_candidates:
+                with tracer.start_as_current_span(
+                    "reranking",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "reranking",
+                    },
+                ) as span:
+                    if (
+                        query_analysis.difficulty_score >= settings.reranker_difficulty_threshold
+                        and len(candidates) >= settings.reranker_min_candidates
+                    ):
                         candidates = await self.reranker.rerank(query_text, candidates, top_k=5)
                         span.set_attribute("voice_rag.reranked_count", len(candidates))
                     else:
-                        span.add_event("reranker.skip", {"reason": "difficulty_low_or_few_candidates"})
+                        span.add_event(
+                            "reranker.skip",
+                            {"reason": "difficulty_low_or_few_candidates"},
+                        )
                     metrics.rerank_ms = (time.perf_counter() - rerank_start) * 1000
                     span.set_attribute("voice_rag.rerank_ms", metrics.rerank_ms)
 
                 # Stage 5: Retrieval guard
                 guard_start = time.perf_counter()
-                with tracer.start_as_current_span("retrieval_guard", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "retrieval_guard"}) as span:
+                with tracer.start_as_current_span(
+                    "retrieval_guard",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "retrieval_guard",
+                    },
+                ) as span:
                     retrieval_decision = self.retrieval_guard.evaluate(candidates)
                     if retrieval_decision.decision == "abstain":
                         span.add_event("retrieval.abstain", {"reason": retrieval_decision.reason})
@@ -123,22 +161,42 @@ class PipelineOrchestrator:
                     span.set_attribute("voice_rag.context_build_ms", metrics.context_build_ms)
 
                 # Stage 6: Context building
-                with tracer.start_as_current_span("context_build", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "context_build"}) as span:
+                with tracer.start_as_current_span(
+                    "context_build",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "context_build",
+                    },
+                ) as span:
                     context = self.context_builder.build(candidates)
                     span.set_attribute("voice_rag.context_length", len(context))
 
                 # Stage 7: Generation
                 self.stage = PipelineStage.GENERATING
                 generation_start = time.perf_counter()
-                with tracer.start_as_current_span("generation", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "generation"}) as span:
+                with tracer.start_as_current_span(
+                    "generation",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "generation",
+                    },
+                ) as span:
                     generated = await self.generator.generate(query_text, context)
                     metrics.generation_ms = (time.perf_counter() - generation_start) * 1000
                     span.set_attribute("voice_rag.generation_ms", metrics.generation_ms)
-                    span.set_attribute("voice_rag.answer_length", len(generated.answer))
+                    span.set_attribute(
+                        "voice_rag.answer_length", len(generated.answer or "")
+                    )
 
                 # Stage 8: Verification
                 verify_start = time.perf_counter()
-                with tracer.start_as_current_span("verification", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "verification"}) as span:
+                with tracer.start_as_current_span(
+                    "verification",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "verification",
+                    },
+                ) as span:
                     verifications = await self.verifier.verify(generated, context)
                     answer_decision = self.answer_guard.evaluate(generated, verifications)
                     metrics.verification_ms = (time.perf_counter() - verify_start) * 1000
@@ -206,19 +264,33 @@ class PipelineOrchestrator:
 
         with tracer.start_as_current_span("pipeline.run", attributes=root_attrs) as root_span:
             try:
-                # Stage 1: Query analysis
+# Stage 1: Query analysis
                 self.stage = PipelineStage.QUERY_READY
                 query_start = time.perf_counter()
-                with tracer.start_as_current_span("query_analysis", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "query_analysis"}) as span:
+                with tracer.start_as_current_span(
+                    "query_analysis",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "query_analysis",
+                    },
+                ) as span:
                     query_analysis = classify_difficulty(query)
                     metrics.query_ms = (time.perf_counter() - query_start) * 1000
                     span.set_attribute("voice_rag.query_ms", metrics.query_ms)
-                    span.set_attribute("voice_rag.difficulty_score", query_analysis.difficulty_score)
+                    span.set_attribute(
+                        "voice_rag.difficulty_score", query_analysis.difficulty_score
+                    )
 
                 # Stage 2: Retrieval
                 self.stage = PipelineStage.RETRIEVING
                 retrieval_start = time.perf_counter()
-                with tracer.start_as_current_span("retrieval", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "retrieval"}) as span:
+                with tracer.start_as_current_span(
+                    "retrieval",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "retrieval",
+                    },
+                ) as span:
                     retrieval_result = await self.retrieval_engine.retrieve(query)
                     candidates = retrieval_result.candidates
                     metrics.dense_retrieval_ms = (time.perf_counter() - retrieval_start) * 1000
@@ -227,18 +299,36 @@ class PipelineOrchestrator:
 
                 # Stage 3: Optional reranking
                 rerank_start = time.perf_counter()
-                with tracer.start_as_current_span("reranking", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "reranking"}) as span:
-                    if query_analysis.difficulty_score >= settings.reranker_difficulty_threshold and len(candidates) >= settings.reranker_min_candidates:
+                with tracer.start_as_current_span(
+                    "reranking",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "reranking",
+                    },
+                ) as span:
+                    if (
+                        query_analysis.difficulty_score >= settings.reranker_difficulty_threshold
+                        and len(candidates) >= settings.reranker_min_candidates
+                    ):
                         candidates = await self.reranker.rerank(query, candidates, top_k=5)
                         span.set_attribute("voice_rag.reranked_count", len(candidates))
                     else:
-                        span.add_event("reranker.skip", {"reason": "difficulty_low_or_few_candidates"})
+                        span.add_event(
+                            "reranker.skip",
+                            {"reason": "difficulty_low_or_few_candidates"},
+                        )
                     metrics.rerank_ms = (time.perf_counter() - rerank_start) * 1000
                     span.set_attribute("voice_rag.rerank_ms", metrics.rerank_ms)
 
                 # Stage 4: Retrieval guard
                 guard_start = time.perf_counter()
-                with tracer.start_as_current_span("retrieval_guard", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "retrieval_guard"}) as span:
+                with tracer.start_as_current_span(
+                    "retrieval_guard",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "retrieval_guard",
+                    },
+                ) as span:
                     retrieval_decision = self.retrieval_guard.evaluate(candidates)
                     if retrieval_decision.decision == "abstain":
                         span.add_event("retrieval.abstain", {"reason": retrieval_decision.reason})
@@ -259,22 +349,42 @@ class PipelineOrchestrator:
                     span.set_attribute("voice_rag.context_build_ms", metrics.context_build_ms)
 
                 # Stage 5: Context building
-                with tracer.start_as_current_span("context_build", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "context_build"}) as span:
+                with tracer.start_as_current_span(
+                    "context_build",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "context_build",
+                    },
+                ) as span:
                     context = self.context_builder.build(candidates)
                     span.set_attribute("voice_rag.context_length", len(context))
 
                 # Stage 6: Generation
                 self.stage = PipelineStage.GENERATING
                 generation_start = time.perf_counter()
-                with tracer.start_as_current_span("generation", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "generation"}) as span:
+                with tracer.start_as_current_span(
+                    "generation",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "generation",
+                    },
+                ) as span:
                     generated = await self.generator.generate(query, context)
                     metrics.generation_ms = (time.perf_counter() - generation_start) * 1000
                     span.set_attribute("voice_rag.generation_ms", metrics.generation_ms)
-                    span.set_attribute("voice_rag.answer_length", len(generated.answer))
+                    span.set_attribute(
+                        "voice_rag.answer_length", len(generated.answer or "")
+                    )
 
                 # Stage 7: Verification
                 verify_start = time.perf_counter()
-                with tracer.start_as_current_span("verification", attributes={"voice_rag.request_id": request_id, "voice_rag.stage": "verification"}) as span:
+                with tracer.start_as_current_span(
+                    "verification",
+                    attributes={
+                        "voice_rag.request_id": request_id,
+                        "voice_rag.stage": "verification",
+                    },
+                ) as span:
                     verifications = await self.verifier.verify(generated, context)
                     answer_decision = self.answer_guard.evaluate(generated, verifications)
                     metrics.verification_ms = (time.perf_counter() - verify_start) * 1000

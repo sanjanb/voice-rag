@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Annotated
-
 from fastapi import APIRouter
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/system", tags=["system"])
 
@@ -16,7 +14,7 @@ class SystemServiceStatus(BaseModel):
     name: str
     status: str  # "healthy" | "degraded" | "unavailable"
     details: str | None = None
-    lastChecked: str
+    lastChecked: str  # noqa: N815
 
 
 class SystemStatus(BaseModel):
@@ -24,18 +22,18 @@ class SystemStatus(BaseModel):
 
     overall: str  # "READY" | "DEGRADED" | "UNAVAILABLE"
     services: list[SystemServiceStatus]
-    lastChecked: str
+    lastChecked: str  # noqa: N815
 
 
 class KnowledgeBaseStatus(BaseModel):
     """Knowledge base status model."""
 
-    totalDocuments: int
-    totalChunks: int
-    processingCount: int
-    readyCount: int
+    totalDocuments: int  # noqa: N815
+    totalChunks: int  # noqa: N815
+    processingCount: int  # noqa: N815
+    readyCount: int  # noqa: N815
     status: str  # "ready" | "processing" | "empty" | "error"
-    lastUpdated: str
+    lastUpdated: str  # noqa: N815
 
 
 class StageLatency(BaseModel):
@@ -52,24 +50,24 @@ class BenchmarkMetrics(BaseModel):
     p70: float
     p95: float
     p99: float
-    stageLatencies: list[StageLatency]
-    recallAt5: float
-    recallAt10: float
+    stageLatencies: list[StageLatency]  # noqa: N815
+    recallAt5: float  # noqa: N815
+    recallAt10: float  # noqa: N815
     mrr: float
     ndcg: float
     groundedness: float
     correctness: float
-    abstentionPrecision: float
+    abstentionPrecision: float  # noqa: N815
 
 
 class BenchmarkRun(BaseModel):
     """Benchmark run model."""
 
     id: str
-    datasetName: str
-    queryCount: int
+    datasetName: str  # noqa: N815
+    queryCount: int  # noqa: N815
     hardware: str
-    commitHash: str
+    commitHash: str  # noqa: N815
     timestamp: str
     metrics: BenchmarkMetrics
 
@@ -78,10 +76,10 @@ class ExperimentComparison(BaseModel):
     """Experiment comparison model."""
 
     name: str
-    recallAt10: float
+    recallAt10: float  # noqa: N815
     mrr: float
-    p50Ms: float
-    p95Ms: float
+    p50Ms: float  # noqa: N815
+    p95Ms: float  # noqa: N815
     chunking: str
     retrieval: str
     reranking: str
@@ -91,16 +89,16 @@ class ExperimentComparison(BaseModel):
 class SystemSettings(BaseModel):
     """System settings model matching frontend types."""
 
-    sttProvider: str  # "Hosted" | "Local" | "Hybrid"
-    sttFallback: str  # "Local" | "None"
-    denseTopK: int
-    sparseTopK: int
-    rrfK: int
-    rerankingMode: str  # "Adaptive" | "Always" | "Never"
-    rerankingThreshold: float
-    abstentionThreshold: float
-    generationModel: str
-    generationTemperature: float
+    sttProvider: str  # noqa: N815
+    sttFallback: str  # noqa: N815
+    denseTopK: int  # noqa: N815
+    sparseTopK: int  # noqa: N815
+    rrfK: int  # noqa: N815
+    rerankingMode: str  # noqa: N815
+    rerankingThreshold: float  # noqa: N815
+    abstentionThreshold: float  # noqa: N815
+    generationModel: str  # noqa: N815
+    generationTemperature: float  # noqa: N815
 
 
 # Mock data from frontend/lib/api.ts
@@ -108,13 +106,48 @@ MOCK_SYSTEM_STATUS = SystemStatus(
     overall="READY",
     lastChecked="2 sec ago",
     services=[
-        SystemServiceStatus(name="API Gateway", status="healthy", details="0.4ms latency", lastChecked="2s ago"),
-        SystemServiceStatus(name="Vector Store (Qdrant)", status="healthy", details="4.2K vectors", lastChecked="2s ago"),
-        SystemServiceStatus(name="Primary STT (Hosted)", status="healthy", details="Whisper v3 active", lastChecked="2s ago"),
-        SystemServiceStatus(name="Fallback STT (Local)", status="healthy", details="Ready", lastChecked="2s ago"),
-        SystemServiceStatus(name="Embedding Model", status="healthy", details="text-embedding-3-small", lastChecked="2s ago"),
-        SystemServiceStatus(name="Cross-Encoder Reranker", status="healthy", details="ms-marco-MiniLM-L-6-v2", lastChecked="2s ago"),
-        SystemServiceStatus(name="Generator LLM", status="healthy", details="gpt-4o-mini", lastChecked="2s ago"),
+        SystemServiceStatus(
+            name="API Gateway",
+            status="healthy",
+            details="0.4ms latency",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Vector Store (Qdrant)",
+            status="healthy",
+            details="4.2K vectors",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Primary STT (Hosted)",
+            status="healthy",
+            details="Whisper v3 active",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Fallback STT (Local)",
+            status="healthy",
+            details="Ready",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Embedding Model",
+            status="healthy",
+            details="text-embedding-3-small",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Cross-Encoder Reranker",
+            status="healthy",
+            details="ms-marco-MiniLM-L-6-v2",
+            lastChecked="2s ago",
+        ),
+        SystemServiceStatus(
+            name="Generator LLM",
+            status="healthy",
+            details="gpt-4o-mini",
+            lastChecked="2s ago",
+        ),
     ],
 )
 

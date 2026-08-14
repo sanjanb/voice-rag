@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import logging
 import time
-from functools import lru_cache
 from typing import Any
 
-from app.http_client import get_shared_client
 from app.config.settings import settings
+from app.http_client import get_shared_client
 
 logger = logging.getLogger(__name__)
 
@@ -25,16 +24,17 @@ class Embedder:
         self.dimensions = dimensions
         self._base_url = "https://api.openai.com" + "/v1"
         self._client = get_shared_client()
+        self._embed_cache: dict[str, list[float]] = {}
 
-
-    def _headers(self) -> dict:
+    def _headers(self) -> dict[str, str]:
         _tok = _get_api_key()
         return {"Authorization": "Bearer " + _tok}
 
-
-    @lru_cache(maxsize=1024)
     async def embed_text(self, text: str) -> list[float]:
         """Embed a single text string (cached)."""
+        if text in self._embed_cache:
+            return self._embed_cache[text]
+
         start = time.perf_counter()
         for attempt in range(3):
             resp = await self._client.post(
@@ -51,9 +51,16 @@ class Embedder:
             break
         resp.raise_for_status()  # raise after exhausting retries
         data = resp.json()
-        embedding = data["data"][0]["embedding"]
+        embedding: list[float] = data["data"][0]["embedding"]
         latency_ms = (time.perf_counter() - start) * 1000
         logger.debug("embed_text latency=%.1fms dims=%d", latency_ms, len(embedding))
+
+        # Simple LRU-style cache with max size
+        if len(self._embed_cache) >= 1024:
+            # Remove first item (oldest)
+            first_key = next(iter(self._embed_cache))
+            del self._embed_cache[first_key]
+        self._embed_cache[text] = embedding
         return embedding
 
 
@@ -95,7 +102,7 @@ class Embedder:
         pass
 
 
-    async def __aenter__(self) -> "Embedder":
+    async def __aenter__(self) -> Embedder:
         return self
 
 
