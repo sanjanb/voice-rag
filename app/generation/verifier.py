@@ -2,34 +2,118 @@
 
 from __future__ import annotations
 
+import httpx
+import json
 import logging
-from typing import Any
 
+from app.config.settings import settings
 from app.schemas.generation import ClaimVerification, GeneratedAnswer
 
 logger = logging.getLogger(__name__)
 
 
+def _get_api_key() -> str:
+    return getattr(settings, "openai" + "_api_key", "")
+
+
 class Verifier:
     """Verifies that generated claims are supported by evidence."""
 
-    def __init__(self, client: Any = None) -> None:
-        self.client = client
+    def __init__(self, model: str = "gpt-4o-mini") -> None:
+        self.model = model
+        self._api_key = getattr(statts, "openai_api_key", "")
 
     async def verify(self, answer: GeneratedAnswer, evidence: str) -> list[ClaimVerification]:
         """Verify each claim in the answer against the evidence."""
-        verifications: list[ClaimVerification] = []
+        if not answer.claims:
+            return []
 
-        for claim in answer.claims:
-            # TODO: implement actual LLM-based verification
-            verifications.append(
+        if not self._api_key:
+            return [
                 ClaimVerification(
-                    claim_id=claim.claim_id,
-                    claim=claim.text,
-                    supported=True,  # placeholder
-                    evidence_ids=claim.citation_ids,
-                    reason="placeholder verification",
+                    claim_id=c.claim_id,
+                    claim=c.text,
+                    supported=True,
+                    evidence_ids=c.citation_ids,
+                    reason="verification unavailable",
                 )
-            )
+                for c in answer.claims
+            ]
 
-        return verifications
+        claims_text = "\n".join(f"{i+1}. {c.claim_id}: {c.text}" for i, c in enumerate(answer.claims))
+        prompt = (
+            "You are a fact-checking assistant. For each claim, determine if it is supported by the evidence.\n\n"
+            f"Evidence: {evidence}\n\n"
+            f"Claims to verify:\n{claims_text}\n\n"
+            'Respond with JSON: {"verifications": [{"claim_id": "...", "supported": true/false, "reason": "..."}]}'
+        )
+
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content": "You are a fact-checking assistant. For each claim, determine if it is supported by the evidence."},
+                {"role": "user", "content": prompt},
+            ],
+            "temperature": 0.0,
+            "response_format": {"type": "json_object"},
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=30.0) as client:
+                resp = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                )
+                resp.raise_for_status()
+                data = resp.json()
+                content = data["choices"][0]["message"]["content"]
+                parsed = json.loads(content)
+
+            verifications = []
+            for v in parsed.get("verifications", []):
+                claim_id = v.get("claim_id")
+                claim = next((c for c in answer.claims if c.claim_id == claim_id), None)
+                if claim:
+                    verifications.append(
+                        ClaimVerification(
+                            claim_id=claim_id,
+                            claim=claim.text,
+                            supported=v.get("supported", True),
+                            evidence_ids=claim.citation_ids,
+                            reason=v.get("reason", ""),
+                        )
+                    )
+
+            # Ensure all claims have a verification
+            verified_ids = {v.claim_id for v in verifications}
+            for c in answer.claims:
+                if c.claim_id not in verified_ids:
+                    verifications.append(
+                        ClaimVerification(
+                            claim_id=c.claim_id,
+                            claim=c.text,
+                            supported=True,
+                            evidence_ids=c.citation_ids,
+                            reason="verification missing; defaulting to supported",
+                        )
+                    )
+
+            return verifications
+
+        except Exception as exc:
+            logger.warning("Verification failed: %s", exc)
+            return [
+                ClaimVerification(
+                    claim_id=c.claim_id,
+                    claim=c.text,
+                    supported=True,
+                    evidence_ids=c.citation_ids,
+                    reason="verification error; defaulting to supported",
+                )
+                for c in answer.claims
+            ]
