@@ -12,7 +12,6 @@ import { RerankerCard } from "@/components/reranking/reranker-card";
 import { GuardrailCard } from "@/components/guardrails/guardrail-card";
 import { EvidenceViewer } from "@/components/answer/evidence-viewer";
 import { usePipelineEvents } from "@/hooks/usePipelineEvents";
-import { MOCK_RUNS } from "@/lib/api";
 import { MessageSquare, Sparkles } from "lucide-react";
 
 type RecorderState =
@@ -41,7 +40,19 @@ export default function AskPage() {
 
   const pipeline = usePipelineEvents();
   const recordingStartTimeRef = useRef<number>(0);
-  const latestRun = MOCK_RUNS[0];
+  const latestRun = pipeline.lastResult
+    ? {
+        runId: pipeline.lastResult.request_id || "",
+        query: pipeline.lastResult.transcript || "",
+        status: pipeline.lastResult.decision === "answer" ? "Complete" as const : "Abstained" as const,
+        totalLatencyMs: pipeline.lastResult.metrics?.total_ms || 0,
+        candidates: [] as any[],
+        answer: pipeline.lastResult.answer || undefined,
+        citations: pipeline.lastResult.citations || [],
+        rerankerDecision: undefined as any,
+        guardrailDecision: undefined as any,
+      }
+    : null;
 
   useEffect(() => {
     const el = document.getElementById("voice-recorder-host");
@@ -187,28 +198,30 @@ export default function AskPage() {
           <LivePipeline
             stages={pipeline.stages}
             activeStage={pipeline.activeStage}
-            totalLatencyMs={latestRun.totalLatencyMs}
+            totalLatencyMs={latestRun?.totalLatencyMs || 0}
           />
 
           {/* Dual Retrieval & RRF Candidate Comparator */}
-          <RetrievalVis candidates={latestRun.candidates} />
+          {latestRun && <RetrievalVis candidates={latestRun.candidates} />}
 
           {/* Reranker & Guardrail Decision Grid */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {latestRun.rerankerDecision && (
+            {latestRun?.rerankerDecision && (
               <RerankerCard decision={latestRun.rerankerDecision} />
             )}
-            {latestRun.guardrailDecision && (
+            {latestRun?.guardrailDecision && (
               <GuardrailCard decision={latestRun.guardrailDecision} />
             )}
           </div>
 
           {/* Grounded Answer & Citation Evidence Split Viewer */}
-          <EvidenceViewer
-            answer={latestRun.answer}
-            citations={latestRun.citations}
-            totalLatencyMs={latestRun.totalLatencyMs}
-          />
+          {latestRun && (
+            <EvidenceViewer
+              answer={latestRun.answer}
+              citations={latestRun.citations}
+              totalLatencyMs={latestRun.totalLatencyMs}
+            />
+          )}
         </div>
       )}
     </div>

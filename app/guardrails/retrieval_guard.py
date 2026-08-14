@@ -48,7 +48,7 @@ class RetrievalGuard:
 
         return RetrievalDecision(
             decision="allow",
-            confidence=candidates[0].rrf_score if candidates else 0.0,
+            confidence=candidates[0].rrf_score or 0.0 if candidates else 0.0,
             reason="Sufficient evidence",
             evidence_ids=[c.chunk_id for c in candidates],
         )

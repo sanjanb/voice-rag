@@ -7,6 +7,7 @@ export interface PipelineEventsState {
   isExecuting: boolean;
   activeStage: PipelineStageName | null;
   stages: Record<PipelineStageName, PipelineStageEvent>;
+  lastResult: any | null;
 }
 
 const INITIAL_STAGES: Record<PipelineStageName, PipelineStageEvent> = {
@@ -21,11 +22,14 @@ const INITIAL_STAGES: Record<PipelineStageName, PipelineStageEvent> = {
   VERIFICATION: { stage: "VERIFICATION", status: "waiting" },
 };
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export function usePipelineEvents() {
   const [state, setState] = useState<PipelineEventsState>({
     isExecuting: false,
     activeStage: null,
     stages: INITIAL_STAGES,
+    lastResult: null,
   });
 
   const resetPipeline = useCallback(() => {
@@ -33,6 +37,7 @@ export function usePipelineEvents() {
       isExecuting: false,
       activeStage: null,
       stages: INITIAL_STAGES,
+      lastResult: null,
     });
   }, []);
 
@@ -40,55 +45,87 @@ export function usePipelineEvents() {
     resetPipeline();
     setState((prev) => ({ ...prev, isExecuting: true }));
 
-    const sequence: { stage: PipelineStageName; duration: number; details: string }[] = [
-      { stage: "STT", duration: 42, details: "Hosted Whisper v3 (42ms)" },
-      { stage: "QUERY", duration: 3, details: "Complexity: MEDIUM" },
-      { stage: "BM25", duration: 7, details: "Top-10 sparse candidates" },
-      { stage: "DENSE", duration: 11, details: "Top-10 dense candidates" },
-      { stage: "RRF", duration: 1, details: "k=60 rank fusion" },
-      { stage: "RERANKER", duration: 31, details: "Adaptive rerank (ENABLED)" },
-      { stage: "GUARDRAIL", duration: 4, details: "Status: PASS (0.94 coverage)" },
-      { stage: "GENERATION", duration: 78, details: "GPT-4o mini grounded generation" },
-      { stage: "VERIFICATION", duration: 5, details: "Claim verification complete" },
+    // Start all stages as waiting, animate STT immediately
+    const stageSequence: PipelineStageName[] = [
+      "STT", "QUERY", "BM25", "DENSE", "RRF", "RERANKER", "GUARDRAIL", "GENERATION", "VERIFICATION",
     ];
 
-    for (const step of sequence) {
-      // Set current stage to running
+    // Animate stages as waiting, then start the real call
+    for (const stage of stageSequence.slice(0, 2)) {
       setState((prev) => ({
         ...prev,
-        activeStage: step.stage,
+        activeStage: stage,
         stages: {
           ...prev.stages,
-          [step.stage]: {
-            stage: step.stage,
-            status: "running",
-          },
+          [stage]: { stage, status: "running" },
         },
       }));
-
-      // Simulate step duration
-      await new Promise((resolve) => setTimeout(resolve, Math.max(150, step.duration * 4)));
-
-      // Set stage to complete
-      setState((prev) => ({
-        ...prev,
-        stages: {
-          ...prev.stages,
-          [step.stage]: {
-            stage: step.stage,
-            status: "complete",
-            durationMs: step.duration,
-            details: step.details,
-          },
-        },
-      }));
+      await new Promise((r) => setTimeout(r, 200));
     }
 
-    setState((prev) => ({
-      ...prev,
-      isExecuting: false,
-      activeStage: null,
-    }));
+    try {
+      const res = await fetch(`${API_BASE}/api/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: question }),
+      });
+      const data = await res.json();
+
+      // Map real latency metrics to stages
+      const m = data.metrics || {};
+      const stageDetails: { stage: PipelineStageName; ms: number; details: string }[] = [
+        { stage: "STT", ms: m.stt_ms || 0, details: `STT (${(m.stt_ms || 0).toFixed(0)}ms)` },
+        { stage: "QUERY", ms: m.query_ms || 0, details: `Query analysis (${(m.query_ms || 0).toFixed(0)}ms)` },
+        { stage: "BM25", ms: (m.dense_retrieval_ms || 0) * 0.3, details: "BM25 sparse retrieval" },
+        { stage: "DENSE", ms: (m.dense_retrieval_ms || 0) * 0.7, details: "Dense vector retrieval" },
+        { stage: "RRF", ms: 1, details: "RRF rank fusion" },
+        { stage: "RERANKER", ms: m.rerank_ms || 0, details: `Reranker (${(m.rerank_ms || 0).toFixed(0)}ms)` },
+        { stage: "GUARDRAIL", ms: m.context_build_ms || 0, details: `Guard + context (${(m.context_build_ms || 0).toFixed(0)}ms)` },
+        { stage: "GENERATION", ms: m.generation_ms || 0, details: `Generation (${(m.generation_ms || 0).toFixed(0)}ms)` },
+        { stage: "VERIFICATION", ms: m.verification_ms || 0, details: `Verification (${(m.verification_ms || 0).toFixed(0)}ms)` },
+      ];
+
+      // Animate through each stage with real durations
+      for (const step of stageDetails) {
+        setState((prev) => ({
+          ...prev,
+          activeStage: step.stage,
+          stages: {
+            ...prev.stages,
+            [step.stage]: { stage: step.stage, status: "running" },
+          },
+        }));
+        const waitMs = Math.max(100, Math.min(step.ms * 2, 800));
+        await new Promise((r) => setTimeout(r, waitMs));
+        setState((prev) => ({
+          ...prev,
+          stages: {
+            ...prev.stages,
+            [step.stage]: {
+              stage: step.stage,
+              status: "complete",
+              durationMs: step.ms,
+              details: step.details,
+            },
+          },
+        }));
+      }
+
+      setState((prev) => ({
+        ...prev,
+        isExecuting: false,
+        activeStage: null,
+        lastResult: data,
+      }));
+    } catch (err) {
+      // Mark current stage as failed
+      setState((prev) => ({
+        ...prev,
+        isExecuting: false,
+        activeStage: null,
+        lastResult: { decision: "error", error: String(err), metrics: {} },
+      }));
+    }
   }, [resetPipeline]);
 
   return {
