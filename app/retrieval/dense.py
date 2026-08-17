@@ -41,7 +41,7 @@ class DenseRetriever:
                 )
                 results = response.points
             elif hasattr(self._client, "search"):
-                results = self._client.search(  # type: ignore[attr-defined]
+                results = self._client.search(
                     collection_name=self._collection,
                     query_vector=query_embedding,
                     limit=top_n,

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -18,7 +20,9 @@ def test_health_endpoint_integration() -> None:
 
 
 @pytest.mark.asyncio
-async def test_transcribe_endpoint_integration() -> None:
+@patch("app.retrieval.sparse.SparseRetriever.search")
+async def test_transcribe_endpoint_integration(mock_search) -> None:
+    mock_search.return_value = []
     """Verify transcribe endpoint accepts audio upload."""
     files = {"audio": ("sample.wav", b"fake audio data", "audio/wav")}
     response = client.post("/transcribe", files=files)

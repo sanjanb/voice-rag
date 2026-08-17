@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from app.embeddings.embedder import Embedder
@@ -37,8 +38,10 @@ class RetrievalEngine:
 
         query_id = str(uuid.uuid4())
 
-        dense_results = await self.dense.search(query, top_n=dense_top_n)
-        sparse_results = await self.sparse.search(query, top_n=sparse_top_n)
+        dense_results, sparse_results = await asyncio.gather(
+            self.dense.search(query, top_n=dense_top_n),
+            self.sparse.search(query, top_n=sparse_top_n),
+        )
 
         fused = reciprocal_rank_fusion(dense_results, sparse_results, top_n=fused_top_n)
 

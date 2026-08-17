@@ -4,8 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import tiktoken
+
 if TYPE_CHECKING:
     from app.schemas.retrieval import RetrievedChunk
+
+enc = tiktoken.get_encoding("cl100k_base")
 
 
 class ContextBuilder:
@@ -20,7 +24,7 @@ class ContextBuilder:
         token_count = 0
 
         for chunk in chunks:
-            chunk_tokens = chunk.metadata.get("token_count", len(chunk.content.split()))
+            chunk_tokens = chunk.metadata.get("token_count", len(enc.encode(chunk.content)))
             if token_count + chunk_tokens > self.max_tokens:
                 break
             context_parts.append(f"[{chunk.chunk_id}] {chunk.content}")

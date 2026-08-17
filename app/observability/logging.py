@@ -28,6 +28,6 @@ def setup_logging(level: str = "INFO") -> None:
     handler.setFormatter(StructuredFormatter())
 
     root = logging.getLogger()
-    root.handlers.clear()
-    root.addHandler(handler)
+    if not root.handlers:
+        root.addHandler(handler)
     root.setLevel(getattr(logging, level.upper(), logging.INFO))

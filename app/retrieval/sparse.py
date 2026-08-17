@@ -58,8 +58,7 @@ class SparseRetriever:
     async def search(self, query: str, top_n: int = 20) -> list[RetrievedChunk]:
         """Search using BM25."""
         if not self.corpus or self._bm25 is None:
-            logger.warning("No corpus configured for sparse retrieval")
-            return []
+            raise ValueError("No corpus configured for sparse retrieval")
 
         tokenized_query = self._tokenize(query)
         scores = self._bm25.get_scores(tokenized_query)

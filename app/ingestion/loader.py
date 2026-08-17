@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,8 @@ TEXT_EXTENSIONS = {
     ".csv",
 }
 MAX_FILE_SIZE = 1_048_576  # 1MB
+
+logger = logging.getLogger(__name__)
 
 
 def load_documents(data_dir: str | Path) -> list[dict[str, Any]]:
@@ -52,6 +55,10 @@ def load_documents(data_dir: str | Path) -> list[dict[str, Any]]:
             continue
 
         try:
+            content = file_path.read_text(encoding="utf-8", errors="strict")
+            doc["content"] = content
+        except UnicodeDecodeError:
+            logger.warning("Encoding errors in %s, replacing undecodable bytes", file_path)
             content = file_path.read_text(encoding="utf-8", errors="replace")
             doc["content"] = content
         except Exception:

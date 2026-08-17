@@ -58,3 +58,4 @@ frontend/.next/
 frontend/tsconfig.tsbuildinfo
 *.tsbuildinfo
 
+.gstack/

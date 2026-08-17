@@ -107,9 +107,9 @@ class Verifier:
                         ClaimVerification(
                             claim_id=c.claim_id,
                             claim=c.text,
-                            supported=True,
+                            supported=False,
                             evidence_ids=c.citation_ids,
-                            reason="verification missing; defaulting to supported",
+                            reason="verification missing; defaulting to unsupported",
                         )
                     )
 

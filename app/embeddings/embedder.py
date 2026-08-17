@@ -41,7 +41,7 @@ class Embedder:
 
         _tok = _get_api_key()
         if not _tok:
-            return [0.0] * self.dimensions
+            raise ValueError("Embedding API key not configured; cannot generate embeddings")
 
         start = time.perf_counter()
         embedding: list[float] | None = None
@@ -92,7 +92,7 @@ class Embedder:
 
         _tok = _get_api_key()
         if not _tok:
-            return [[0.0] * self.dimensions for _ in texts]
+            raise ValueError("Embedding API key not configured; cannot generate embeddings")
 
         all_embeddings: list[list[float]] = []
         for i in range(0, len(texts), batch_size):

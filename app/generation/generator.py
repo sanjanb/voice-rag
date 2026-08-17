@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 
@@ -12,6 +11,7 @@ from app.config.settings import settings
 from app.generation.prompts import GENERATION_PROMPT, SYSTEM_PROMPT
 from app.generation.structured import validate_generated_answer
 from app.http_client import get_shared_client
+from app.pipeline.retry import with_retry
 from app.schemas.generation import GeneratedAnswer
 
 logger = logging.getLogger(__name__)
@@ -54,28 +54,28 @@ class Generator:
             "response_format": {"type": "json_object"},
         }
 
-        retries = max_retries
-        while True:
-            try:
-                resp = await self._client.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                )
-                resp.raise_for_status()
-                data = resp.json()
-                content = data["choices"][0]["message"]["content"]
-                parsed = json.loads(content)
-                return validate_generated_answer(parsed)
+        async def _call_api() -> GeneratedAnswer:
+            resp = await self._client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json=payload,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            content = data["choices"][0]["message"]["content"]
+            parsed = json.loads(content)
+            return validate_generated_answer(parsed)
 
-            except httpx.HTTPStatusError as exc:
-                logger.warning("OpenAI API error: %s", exc)
-                if retries > 0:
-                    retries -= 1
-                    await asyncio.sleep(2 ** (max_retries - retries))
-                    continue
-                return GeneratedAnswer(decision="abstain", answer=None, confidence=0.0)
-
-            except Exception as exc:
-                logger.warning("Generation failed: %s", exc)
-                return GeneratedAnswer(decision="abstain", answer=None, confidence=0.0)
+        try:
+            return await with_retry(  # type: ignore[no-any-return]
+                _call_api,
+                max_attempts=max_retries + 1,
+                backoff_ms=2000,
+                retryable_exceptions=(httpx.HTTPStatusError,),
+            )
+        except httpx.HTTPStatusError as exc:
+            logger.warning("OpenAI API error after retries: %s", exc)
+            return GeneratedAnswer(decision="abstain", answer=None, confidence=0.0)
+        except Exception as exc:
+            logger.warning("Generation failed: %s", exc)
+            return GeneratedAnswer(decision="abstain", answer=None, confidence=0.0)

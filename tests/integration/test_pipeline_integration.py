@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import pytest
 
 from app.pipeline.orchestrator import PipelineOrchestrator
@@ -9,7 +11,9 @@ from app.schemas.audio import AudioRequest
 
 
 @pytest.mark.asyncio
-async def test_orchestrator_execution_flow() -> None:
+@patch("app.retrieval.sparse.SparseRetriever.search")
+async def test_orchestrator_execution_flow(mock_search) -> None:
+    mock_search.return_value = []
     """Verify orchestrator runs through pipeline stages."""
     orchestrator = PipelineOrchestrator()
     request = AudioRequest(audio_bytes=b"sample audio", request_id="req-123")
